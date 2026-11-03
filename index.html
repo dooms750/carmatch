@@ -101,9 +101,9 @@ nav.tabs a.locked{opacity:.45}
 .qs{display:flex;flex-direction:column;gap:28px}
 .q{display:flex;flex-direction:column;gap:10px}
 .q>.ql{font-weight:600;font-size:1rem;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.q>.ql output{font-family:var(--mono);font-size:1.05rem;color:var(--accent);font-weight:600}
+.q>.ql output{font-family:var(--mono);font-size:1.05rem;color:var(--accent);font-weight:600;white-space:nowrap}
 .q .qd{font-size:.85rem;color:var(--muted);margin-top:-6px}
-.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;align-items:end}
 input[type=number],input[type=text],select,textarea{width:100%;font:inherit;font-size:1rem;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--sunk);color:var(--ink);min-height:46px}
 input[type=number]{font-family:var(--mono)}
 textarea{resize:vertical;min-height:96px}
@@ -131,10 +131,13 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
 details.adv{border-top:1px dashed var(--line);padding-top:14px}
 details.adv summary{cursor:pointer;font-weight:600;color:var(--muted);font-size:.9rem}
 details.adv[open] summary{margin-bottom:16px}
-.navbtns{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line2);padding-top:20px;margin-top:8px;flex-wrap:wrap}
-.live{display:flex;align-items:center;gap:12px;background:var(--sunk);border:1px solid var(--line2);border-radius:12px;padding:10px 14px;font-size:.88rem}
-.live b{font-weight:600}
-.live .sc{font-family:var(--mono);color:var(--accent);font-weight:600}
+.dock{border-top:1px solid var(--line2);padding-top:18px;margin-top:26px}
+.navbtns{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px}
+.live{min-width:0;text-align:center;font-size:.86rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live b{color:var(--ink);font-weight:600;display:inline-block}
+.live .sc{font-family:var(--mono);color:var(--accent);font-weight:600;margin-left:8px;background:var(--accent-soft);padding:1px 7px;border-radius:999px}
+.live.bump b{animation:bump .6s ease}
+@keyframes bump{40%{transform:translateY(-3px);color:var(--accent)}}
 
 /* AI */
 .ai{border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;
@@ -274,10 +277,109 @@ footer.hyp{font-size:.82rem;color:var(--muted);display:flex;flex-direction:colum
 footer.hyp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;max-width:100ch}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:.9rem;z-index:20}
 @media (prefers-reduced-motion:no-preference){.ring circle.arc{transition:stroke-dasharray .6s cubic-bezier(.2,.7,.2,1)}.view{animation:fade .25s ease}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+
+/* Splash */
+#splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--bg);animation:spOut .45s ease 1.95s forwards;cursor:pointer}
+#splash.gone{animation:spOut .25s ease forwards}
+@keyframes spOut{to{opacity:0;visibility:hidden}}
+.sp-in{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center}
+.sp-gauge{width:min(190px,48vw);height:auto;overflow:visible}
+.sp-track{fill:none;stroke:var(--line);stroke-width:10;stroke-linecap:round;stroke-dasharray:377 503}
+.sp-arc{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;stroke-dasharray:272 503;animation:spArc 1.3s cubic-bezier(.55,0,.2,1) .1s both}
+@keyframes spArc{0%{stroke-dasharray:0 503}65%{stroke-dasharray:356 503}100%{stroke-dasharray:272 503}}
+.sp-ticks line{stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;opacity:.55}
+.sp-needle{transform-box:view-box;transform-origin:100px 100px;transform:rotate(60deg);animation:spNeedle 1.3s cubic-bezier(.55,0,.2,1) .1s both}
+@keyframes spNeedle{0%{transform:rotate(-135deg)}65%{transform:rotate(120deg)}100%{transform:rotate(60deg)}}
+.sp-speed{font-family:var(--mono);font-size:.78rem;color:var(--muted);letter-spacing:.12em;margin-top:-58px;margin-bottom:26px}
+.sp-speed b{display:block;font-family:var(--display);font-stretch:100%;font-size:2rem;color:var(--ink);letter-spacing:0;line-height:1;font-variant-numeric:tabular-nums}
+.sp-word{font-family:var(--display);font-stretch:125%;font-weight:800;font-size:clamp(2.2rem,8vw,3.4rem);text-transform:uppercase;letter-spacing:.02em;line-height:1;animation:spUp .6s cubic-bezier(.2,.7,.2,1) .6s both}
+.sp-word span{color:var(--accent)}
+.sp-tag{color:var(--muted);animation:spUp .6s ease .85s both}
+@keyframes spUp{from{opacity:0;transform:translateY(14px)}}
+.sp-road{width:min(280px,72vw);height:3px;overflow:hidden;position:relative;border-radius:2px;margin-top:6px;animation:spUp .6s ease .9s both}
+.sp-road i{position:absolute;top:0;bottom:0;left:0;width:200%;background:repeating-linear-gradient(90deg,var(--line) 0 18px,transparent 18px 32px);animation:road .35s linear infinite}
+@keyframes road{to{transform:translateX(-32px)}}
+@media (prefers-reduced-motion:reduce){#splash{animation-delay:.4s}.sp-arc,.sp-needle,.sp-word,.sp-tag,.sp-road,.sp-road i{animation:none}}
+
+/* Intro */
+.intro{display:flex;flex-direction:column;gap:28px}
+.big{font-size:clamp(2rem,5vw,3.2rem);line-height:1.04;font-stretch:118%;max-width:18ch}
+.big em{font-style:normal;color:var(--accent)}
+.perks{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px}
+.perks div{display:flex;flex-direction:column;gap:2px}
+.perks b{font-family:var(--display);font-size:1.35rem;font-stretch:110%}
+.perks span{color:var(--muted);font-size:.88rem}
+.btn.lg{padding:14px 26px;font-size:1.02rem}
+.notice{background:var(--ok-bg);color:var(--ok);border-radius:12px;padding:12px 16px;font-size:.92rem}
+.stepbody{display:flex;flex-direction:column}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:1px solid var(--line);background:var(--sunk);border-radius:10px;padding:8px 12px;text-align:left;min-width:0;max-width:100%}
+.chip span{font-size:.72rem;color:var(--muted)}
+.chip b{font-size:.86rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.chip:hover{border-color:var(--accent)}
+.chip:hover span{color:var(--accent)}
+
+/* Analyse */
+.analyze{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fadeIn .2s ease}
+.analyze.out{opacity:0;transition:opacity .3s}
+.an-in{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;width:min(380px,86vw)}
+.an-in svg{width:64px;height:64px;animation:spin .9s linear infinite}
+.an-name{font-family:var(--mono);font-size:.84rem;color:var(--ink);min-height:1.4em}
+.an-in .pbar{width:100%}
+.an-in .pbar i{transition:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0}}
+
+/* Icônes d'onglets */
+nav.tabs .ic{width:18px;height:18px;flex:none}
+nav.tabs .sh{display:none}
+.lbl{display:inline}
+
+@media (prefers-reduced-motion:no-preference){
+  .slide-f{animation:slideF .34s cubic-bezier(.2,.7,.2,1)}
+  .slide-b{animation:slideB .34s cubic-bezier(.2,.7,.2,1)}
+  @keyframes slideF{from{opacity:0;transform:translateX(26px)}}
+  @keyframes slideB{from{opacity:0;transform:translateX(-26px)}}
+  .choice{transition:border-color .15s,background .15s,transform .12s}
+  .choice:active{transform:scale(.98)}
+  .btn:active{transform:scale(.98)}
+}
+
+/* Mobile : onglets en bas, navigation d'étapes ancrée */
+@media (max-width:720px){
+  body{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--panel);border-top:1px solid var(--line);border-bottom:0;gap:0;
+    padding:2px max(4px,env(safe-area-inset-right,0px)) calc(2px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px));box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+  nav.tabs a{flex:1 1 0;min-width:0;flex-direction:column;gap:3px;padding:8px 2px 6px;font-size:.66rem;border-bottom:0;border-top:3px solid transparent;margin:0;text-align:center}
+  nav.tabs a[aria-current="page"]{border-top-color:var(--accent);color:var(--accent)}
+  nav.tabs .ic{width:21px;height:21px}
+  nav.tabs .lg,nav.tabs a .n{display:none}
+  nav.tabs .sh{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .dock{position:sticky;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--panel);
+    margin:26px calc(-1 * clamp(18px,3vw,32px)) calc(-1 * clamp(18px,3vw,32px));padding:12px clamp(18px,3vw,32px);border-radius:0 0 var(--r) var(--r);box-shadow:0 -6px 14px rgba(0,0,0,.05)}
+  .lbl,.live .lk,.save{display:none}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 
 </head>
 <body>
+<div id="splash" aria-hidden="true">
+  <div class="sp-in">
+    <svg class="sp-gauge" viewBox="0 0 200 200">
+      <circle class="sp-track" cx="100" cy="100" r="80" transform="rotate(135 100 100)"/>
+      <circle class="sp-arc" cx="100" cy="100" r="80" transform="rotate(135 100 100)"/>
+      <g class="sp-ticks"><line x1="61.8" y1="138.2" x2="50.5" y2="149.5"/><line x1="42.9" y1="118.5" x2="33.4" y2="121.6"/><line x1="40.7" y1="90.6" x2="30.9" y2="89.0"/><line x1="51.5" y1="64.7" x2="43.4" y2="58.9"/><line x1="72.8" y1="46.5" x2="68.2" y2="37.6"/><line x1="100.0" y1="46.0" x2="100.0" y2="30.0"/><line x1="127.2" y1="46.5" x2="131.8" y2="37.6"/><line x1="148.5" y1="64.7" x2="156.6" y2="58.9"/><line x1="159.3" y1="90.6" x2="169.1" y2="89.0"/><line x1="157.1" y1="118.5" x2="166.6" y2="121.6"/><line x1="138.2" y1="138.2" x2="149.5" y2="149.5"/></g>
+      <g class="sp-needle"><line x1="100" y1="108" x2="100" y2="36" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/></g>
+      <circle cx="100" cy="100" r="8" fill="var(--ink)"/><circle cx="100" cy="100" r="3" fill="var(--accent)"/>
+    </svg>
+    <div class="sp-speed"><b id="spN">100</b>KM/H</div>
+    <div class="sp-word">Car<span>Match</span></div>
+    <div class="sp-tag">La voiture qui vous correspond, au bon prix.</div>
+    <div class="sp-road"><i></i></div>
+  </div>
+</div>
+
 <div class="wrap">
   <header class="appbar">
     <a class="brand" href="#configuration" aria-label="CarMatch, retour à la configuration">
@@ -293,12 +395,12 @@ footer.hyp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:
   </header>
 
   <nav class="tabs" aria-label="Sections">
-    <a href="#configuration" data-v="configuration">Configuration</a>
-    <a href="#ma-voiture" data-v="ma-voiture">Ma voiture</a>
-    <a href="#classement" data-v="classement">Classement</a>
-    <a href="#financement" data-v="financement">Financement</a>
-    <a href="#comparer" data-v="comparer">Comparer <span class="n" id="cmpCount" hidden></span></a>
-    <a href="#parametres" data-v="parametres">Paramètres</a>
+    <a href="#configuration" data-v="configuration"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg><span class="lg">Configuration</span><span class="sh">Profil</span></a>
+    <a href="#ma-voiture" data-v="ma-voiture"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15l1.6-4.6A2 2 0 0 1 8.5 9h7a2 2 0 0 1 1.9 1.4L19 15"/><rect x="3" y="15" width="18" height="4" rx="1.5"/><path d="M6.5 19v1.5M17.5 19v1.5"/></svg><span class="lg">Ma voiture</span><span class="sh">Ma voiture</span></a>
+    <a href="#classement" data-v="classement"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M7 20v-6M12 20V6M17 20v-9"/></svg><span class="lg">Classement</span><span class="sh">Classement</span></a>
+    <a href="#financement" data-v="financement"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></svg><span class="lg">Financement</span><span class="sh">Financer</span></a>
+    <a href="#comparer" data-v="comparer"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M8 20h8M5 8h14"/><path d="M5 8l-2.5 6h5zM19 8l-2.5 6h5z"/></svg><span class="lg">Comparer</span><span class="sh">Comparer</span> <span class="n" id="cmpCount" hidden></span></a>
+    <a href="#parametres" data-v="parametres"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M3.8 7l2.6 1.5M17.6 15.5l2.6 1.5M3.8 17l2.6-1.5M17.6 8.5l2.6-1.5"/></svg><span class="lg">Paramètres</span><span class="sh">Réglages</span></a>
   </nav>
 
   <section class="view" id="v-configuration"></section>
@@ -539,36 +641,89 @@ function qHTML(f,p){
   }}
 function readInput(el){if(el.dataset.bool)return el.checked;if(el.dataset.num){const n=parseFloat(el.value);return Number.isFinite(n)?n:0;}return el.value;}
 
+let SHOWINTRO=true,DIR=1,PRESETSEL="__cur",CFGNOTE="",ANIM=true,LASTTOP="";
+const SPARK=`<svg class="spark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 5.2L15 7l-5.2 1.8L8 14l-1.8-5.2L1 7l5.2-1.8z" fill="var(--accent)"/></svg>`;
+const PRESET_TXT={"Famille 2 enfants":"Coffre, budget et sobriété","Gros rouleur":"Autonomie et longs trajets","Plaisir sportif":"L'accélération avant tout"};
+function renderIntro(){
+  const n=vehicles().length;
+  $("v-configuration").innerHTML=`
+  <div class="panel pad intro slide-f">
+    <div class="stack" style="gap:12px"><span class="eyebrow">Bienvenue</span><h2 class="big">Trouvons la voiture <em>faite pour vous</em></h2>
+      <p class="lead">Six questions courtes sur vos trajets, vos priorités et vos finances. CarMatch compare ensuite ${n} modèles vendus en France et vous dit lequel choisir, en quelle motorisation, et s'il vaut mieux acheter, louer ou passer par votre employeur.</p></div>
+    <div class="perks"><div><b>2 minutes</b><span>Six étapes, une question à la fois</span></div><div><b>${n} modèles</b><span>Toutes les marques distribuées en France</span></div><div><b>Fiscalité 2026</b><span>Prime CEE, malus, avantage en nature</span></div></div>
+    <fieldset class="q" style="border:0;padding:0;margin:0"><legend class="ql" style="padding:0;margin-bottom:10px">Point de départ</legend>
+      <div class="choices"><label class="choice"><input type="radio" name="preset" value="__cur" ${PRESETSEL==="__cur"?"checked":""}><b>Mes réponses</b><small>Partir du profil « ${esc(st.active)} »</small></label>
+      ${Object.keys(PRESET_TXT).map(k=>`<label class="choice"><input type="radio" name="preset" value="${esc(k)}" ${PRESETSEL===k?"checked":""}><b>${esc(k)}</b><small>${PRESET_TXT[k]}</small></label>`).join("")}</div></fieldset>
+    <div class="ai" id="aiDescribe" ${SAMPLE===false?"hidden":""}>
+      <h3>${SPARK}Ou décrivez votre besoin en quelques phrases</h3>
+      <textarea id="aiText" aria-label="Décrivez votre besoin" placeholder="Ex. : 4 trajets de 450 km par an, le reste en ville. Je veux un bon 0-100 et un grand coffre, j'aime les SUV. Borne à la maison, TMI 30 %, ma boîte propose des voitures de fonction."></textarea>
+      <div class="ask"><button class="btn primary sm" type="button" id="aiFill">Remplir avec l'IA</button><span class="hint" id="aiFillNote"></span></div></div>
+    <div class="dock" style="margin-top:0"><div class="navbtns" style="grid-template-columns:1fr auto"><span class="hint">Vous pourrez tout modifier ensuite.</span><button class="btn primary lg" type="button" id="startCfg">Commencer →</button></div></div>
+  </div>`;
+  $("v-configuration").querySelectorAll("input[name=preset]").forEach(r=>r.onchange=()=>{PRESETSEL=r.value;});
+  $("startCfg").onclick=()=>{if(PRESETSEL!=="__cur"){st.profiles[st.active]=deepMerge(DEF_P,PRESETS[PRESETSEL]);EVAL=null;persist();}
+    SHOWINTRO=false;CSTEP=0;DIR=1;renderConfig();scrollTop();};
+  wireAI();
+}
 function renderConfig(){
+  if(SHOWINTRO&&!isDone()){renderIntro();return;}
   const p=P(),s=STEPS[CSTEP],last=CSTEP===STEPS.length-1;
   $("v-configuration").innerHTML=`
   <div class="cfg">
-    <nav class="steps" aria-label="Étapes">${STEPS.map((x,i)=>`<button type="button" data-step="${i}" class="${i<CSTEP||isDone()?"done":""}" ${i===CSTEP?'aria-current="step"':""}><span class="num">${i<CSTEP||isDone()&&i!==CSTEP?"✓":i+1}</span><span class="t">${x.t}</span><span class="s">${esc(x.sum(p))}</span></button>`).join("")}</nav>
+    <nav class="steps" aria-label="Étapes">${STEPS.map((x,i)=>`<button type="button" data-step="${i}" class="${i<CSTEP||isDone()?"done":""}" ${i===CSTEP?'aria-current="step"':""}><span class="num">${(i<CSTEP||isDone())&&i!==CSTEP?"✓":i+1}</span><span class="t">${x.t}</span><span class="s">${esc(x.sum(p))}</span></button>`).join("")}</nav>
     <div class="stack">
-      <div class="progress"><div class="hint">Étape ${CSTEP+1} sur ${STEPS.length}</div><div class="pbar"><i style="width:${(CSTEP+1)/STEPS.length*100}%"></i></div></div>
-      ${CSTEP===0?`<div class="ai" id="aiDescribe" ${SAMPLE===false?"hidden":""}>
-        <h3><svg class="spark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 5.2L15 7l-5.2 1.8L8 14l-1.8-5.2L1 7l5.2-1.8z" fill="var(--accent)"/></svg>Aller plus vite : décrivez votre besoin</h3>
-        <textarea id="aiText" placeholder="Ex. : 4 trajets de 450 km par an, le reste en ville. Je veux un bon 0-100 et un grand coffre, j'aime les SUV. Borne à la maison, TMI 30 %, ma boîte propose des voitures de fonction."></textarea>
-        <div class="ask"><button class="btn primary sm" type="button" id="aiFill">Remplir avec l'IA</button><span class="hint" id="aiFillNote"></span></div></div>`:""}
+      <div class="progress"><div class="hint">Étape ${CSTEP+1} sur ${STEPS.length} · ${s.t}</div><div class="pbar"><i style="width:${(CSTEP+1)/STEPS.length*100}%"></i></div></div>
+      ${CFGNOTE?`<div class="notice">${esc(CFGNOTE)}</div>`:""}
       <div class="panel pad">
-        <div class="stephead"><span class="eyebrow">Étape ${CSTEP+1} / ${STEPS.length}</span><h2>${s.t}</h2><p class="lead">${s.d}</p></div>
-        <div class="qs" style="margin-top:18px">${s.q.map(f=>qHTML(f,p)).join("")}</div>
-        <div class="navbtns">
-          <button class="btn ghost" type="button" id="prevStep" ${CSTEP===0?"disabled":""}>← Précédent</button>
-          ${last?`<button class="btn primary" type="button" id="finish">Voir ma voiture →</button>`:`<button class="btn primary" type="button" id="nextStep">Suivant →</button>`}
+        <div class="stepbody slide-${DIR>0?"f":"b"}">
+          <div class="stephead"><span class="eyebrow">Étape ${CSTEP+1} / ${STEPS.length}</span><h2>${s.t}</h2><p class="lead">${s.d}</p></div>
+          <div class="qs" style="margin-top:18px">${s.q.map(f=>qHTML(f,p)).join("")}</div>
         </div>
+        <div class="dock"><div class="navbtns">
+          <button class="btn ghost" type="button" id="prevStep" ${CSTEP===0&&isDone()?"disabled":""} aria-label="Étape précédente">←<span class="lbl"> Précédent</span></button>
+          <div class="live" id="live" aria-live="polite"></div>
+          ${last?`<button class="btn primary" type="button" id="finish">${isDone()?"Mettre à jour":"Voir ma voiture"} →</button>`:`<button class="btn primary" type="button" id="nextStep">Suivant →</button>`}
+        </div></div>
       </div>
-      <div class="live" id="live"></div>
     </div>
   </div>`;
-  $("prevStep").onclick=()=>{CSTEP=Math.max(0,CSTEP-1);renderConfig();scrollTop();};
-  const nx=$("nextStep");if(nx)nx.onclick=()=>{CSTEP++;renderConfig();scrollTop();};
-  const fi=$("finish");if(fi)fi.onclick=()=>{st.ui.done[st.active]=true;persist();location.hash="ma-voiture";};
-  updLive();wireAI();
+  $("prevStep").onclick=()=>{CFGNOTE="";if(CSTEP===0){SHOWINTRO=true;DIR=-1;renderConfig();scrollTop();return;}DIR=-1;CSTEP--;renderConfig();scrollTop();};
+  const nx=$("nextStep");if(nx)nx.onclick=()=>{CFGNOTE="";DIR=1;CSTEP++;renderConfig();scrollTop();};
+  const fi=$("finish");if(fi)fi.onclick=()=>{CFGNOTE="";st.ui.done[st.active]=true;persist();analyzeThen(()=>{location.hash="ma-voiture";});};
+  LASTTOP="";updLive();
+}
+function analyzeThen(cb){
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const all=vehicles(),names=all.map(v=>v.n),phases=["Filtrage selon vos critères…","Calcul des aides et du malus…","Achat, LLD ou voiture de fonction…","Classement final…"];
+  const o=document.createElement("div");o.className="analyze";o.setAttribute("role","status");
+  o.innerHTML=`<div class="an-in"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="32" cy="32" r="26" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="50 200"/></svg>
+    <h3>Analyse de ${all.length} véhicules</h3><p class="an-name"></p><div class="pbar"><i style="width:0"></i></div><p class="hint an-ph">${phases[0]}</p></div>`;
+  document.body.appendChild(o);
+  const dur=reduce?250:1600,t0=performance.now(),bar=o.querySelector(".pbar i"),nm=o.querySelector(".an-name"),ph=o.querySelector(".an-ph");
+  let fired=false;const end=()=>{if(fired)return;fired=true;ANIM=true;cb();o.classList.add("out");setTimeout(()=>o.remove(),320);};
+  const tick=t=>{const k=Math.min(1,(t-t0)/dur);bar.style.width=(k*100)+"%";nm.textContent=names[Math.min(names.length-1,Math.floor(k*names.length))]||"";ph.textContent=phases[Math.min(3,Math.floor(k*4))];if(k<1)requestAnimationFrame(tick);else end();};
+  requestAnimationFrame(tick);setTimeout(end,dur+1500);
+}
+function countUps(root){
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;if(reduce)return;
+  const delay=document.getElementById("splash")?1900:120;
+  const arcs=[...root.querySelectorAll("circle.arc")],nums=[...root.querySelectorAll("[data-count]")];
+  arcs.forEach(c=>{c.dataset.full=c.getAttribute("stroke-dasharray");c.style.strokeDasharray="0 999";});
+  nums.forEach(el=>{el.textContent=el.dataset.fmt==="eur"?eur(0):"0";});
+  setTimeout(()=>{
+    arcs.forEach(c=>{c.style.strokeDasharray=c.dataset.full;});
+    const t0=performance.now(),d=1000;
+    const step=t=>{const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);
+      nums.forEach(el=>{const to=+el.dataset.count;el.textContent=el.dataset.fmt==="eur"?eur(to*e):String(Math.round(to*e));});
+      if(k<1)requestAnimationFrame(step);};
+    requestAnimationFrame(step);
+  },delay);
 }
 function scrollTop(){try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){}}
 function updLive(){const el=$("live");if(!el)return;const {list}=ev();
-  el.innerHTML=list.length?`<span class="hint">Meilleur match à ce stade</span><b>${esc(list[0].v.n)}</b><span class="sc">${list[0].score}/100</span>`:`<span class="hint">Aucun véhicule ne correspond encore : élargissez vos critères.</span>`;}
+  if(!list.length){el.innerHTML=`<span>Aucun véhicule ne correspond : élargissez vos critères</span>`;LASTTOP="";return;}
+  const t=list[0];el.innerHTML=`<span class="lk">Meilleur match : </span><b>${esc(t.v.n)}</b><span class="sc">${t.score}</span>`;
+  if(LASTTOP&&LASTTOP!==t.v.id){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump");}LASTTOP=t.v.id;}
 
 /* ---------- Ma voiture ---------- */
 function needConfig(v){return `<div class="panel pad empty"><h2>Commencez par la configuration</h2><p>Six étapes courtes pour décrire vos trajets, vos priorités et votre situation. CarMatch vous propose ensuite la voiture et la formule qui vous correspondent.</p><a class="btn primary" href="#configuration">Configurer mon profil</a></div>`;}
@@ -591,14 +746,16 @@ function renderMatch(){
   V.innerHTML=`
   <div class="panel pad stack" style="gap:24px">
     <div class="hero">
-      <div class="ring" role="img" aria-label="Adéquation ${top.score} sur 100"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="66" fill="none" stroke="var(--line2)" stroke-width="12" stroke-dasharray="${arc} ${C}" stroke-linecap="round"/><circle class="arc" cx="80" cy="80" r="66" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="${fill} ${C}" stroke-linecap="round"/></svg><div class="val"><b>${top.score}</b><span>sur 100</span></div></div>
+      <div class="ring" role="img" aria-label="Adéquation ${top.score} sur 100"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="66" fill="none" stroke="var(--line2)" stroke-width="12" stroke-dasharray="${arc} ${C}" stroke-linecap="round"/><circle class="arc" cx="80" cy="80" r="66" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="${fill} ${C}" stroke-linecap="round"/></svg><div class="val"><b data-count="${top.score}">${top.score}</b><span>sur 100</span></div></div>
       <div><span class="eyebrow">Votre meilleur match</span><h2 style="font-size:clamp(1.6rem,3.4vw,2.4rem)"><em>${esc(top.v.n)}</em></h2>
         <div class="facts"><span><b>${dec(top.v.acc)} s</b> 0-100</span><span><b>${top.v.trunk} L</b> coffre</span><span><b>${fmt(top.v.price)} €</b> TTC</span><span>${BODY[top.v.body]} · ${esc(top.v.made)}</span></div></div>
     </div>
+    <div class="stack" style="gap:8px"><span class="eyebrow">Votre profil · touchez pour modifier</span>
+      <div class="chips">${STEPS.map((s,i)=>`<button class="chip" type="button" data-edit="${i}"><span>${s.t}</span><b>${esc(s.sum(p))}</b></button>`).join("")}</div></div>
     <div class="tiles">
       <div class="tile"><span class="k">Motorisation conseillée</span><span class="v">${EN[top.v.e]}</span><span class="s">${other?`Alternative : ${EN[other.v.e].toLowerCase()}`:"Seule motorisation retenue"}</span></div>
       <div class="tile"><span class="k">Formule la plus avantageuse</span><span class="v">${MN[bm[0]]}</span><span class="s">${bm[0]==="fon"?`Sinon : ${MN[privBest].toLowerCase()}`:`Sur ${p.horizon} ans`}</span></div>
-      <div class="tile"><span class="k">Coût réel</span><span class="v mono">${eur(bm[1].month)} <span style="font-size:.9rem;font-weight:500">/ mois</span></span><span class="s">Tout compris, revente déduite</span></div>
+      <div class="tile"><span class="k">Coût réel</span><span class="v mono"><span data-count="${Math.round(bm[1].month)}" data-fmt="eur">${eur(bm[1].month)}</span> <span style="font-size:.9rem;font-weight:500">/ mois</span></span><span class="s">Tout compris, revente déduite</span></div>
     </div>
     <div class="stack" style="gap:10px"><h3>Pourquoi ce choix</h3><ul class="why">${why.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></div>
     <div class="next"><a class="btn primary" href="#financement">Voir le détail du financement</a><a class="btn" href="#classement">Voir le classement complet</a></div>
@@ -611,6 +768,7 @@ function renderMatch(){
     <div class="ask">${AITURNS.length?`<input type="text" id="aiQ" placeholder="Posez une question, par ex. « et si je la garde 6 ans ? »" aria-label="Question pour l'IA"><button class="btn primary sm" type="button" id="aiSend">Envoyer</button>`:`<button class="btn primary sm" type="button" id="aiGo">Demander l'avis de l'IA</button>`}<button class="btn sm" type="button" id="aiStop" hidden>Arrêter</button></div>
   </section>`;
   wireAIPanel();
+  if(ANIM){ANIM=false;countUps(V);}
 }
 
 /* ---------- Classement ---------- */
@@ -793,7 +951,7 @@ function ioDialog(){
 
 /* ---------- Profils, dialogues ---------- */
 function renderProfiles(){$("profSel").innerHTML=Object.keys(st.profiles).map(k=>`<option ${k===st.active?"selected":""}>${esc(k)}</option>`).join("");}
-function switchProfile(){AITURNS=[];AIHTML="";CSTEP=0;changed();if(!isDone())location.hash="configuration";}
+function switchProfile(){AITURNS=[];AIHTML="";CSTEP=0;SHOWINTRO=true;PRESETSEL="__cur";ANIM=true;changed();if(!isDone())location.hash="configuration";}
 function newProfile(){
   openDlg(`<h2>Nouveau profil</h2><div class="fields"><div class="f full"><label for="npName">Nom</label><input type="text" id="npName" required placeholder="Ex. : Moi 2027, Conjoint…"></div>
     <div class="f full"><label for="npFrom">Partir de</label><select id="npFrom"><option value="__cur">Profil actuel (${esc(st.active)})</option>${Object.keys(PRESETS).map(k=>`<option value="${esc(k)}">Préréglage : ${esc(k)}</option>`).join("")}</select></div></div>
@@ -864,7 +1022,7 @@ function wireAI(){
     const schema=Object.values(SPEC).map(f=>`${f.p} : ${["cards","seg"].includes(f.k)?f.o.map(o=>JSON.stringify(f.num?Number(o[0]):o[0])).join(" | "):f.k==="multi"?"objet {BEV,PHEV,HEV,ICE} de booléens":f.k==="tog"?"booléen":f.k==="level"?"entier 0 à 5":`nombre${f.min!=null?` ${f.min} à ${f.max}`:""}`} (${f.l})`).join("\n");
     try{const r=await SAMPLE.json(`Transforme la description d'un acheteur de voiture en réglages pour un outil. Ne renseigne QUE les champs que la description permet de déduire. Les priorités w.* vont de 0 (indifférent) à 5 (essentiel). Champs possibles :\n${schema}\n\nProfil actuel : ${JSON.stringify(P())}\n\nDescription : """${txt}"""\n\nRéponds uniquement en JSON : {"changes": {...en notation imbriquée, ex. {"w":{"sport":5}}}, "resume": "une phrase en français de ce que tu as compris"}`,{modelTier:"quick"});
       const n=applyChanges(r&&r.changes);const msg=(r&&r.resume?r.resume+" ":"")+`(${n} réglage${n>1?"s":""} renseigné${n>1?"s":""} : vérifiez les étapes puis validez.)`;
-      changed();renderConfig();$("aiText").value=txt;$("aiFillNote").textContent=msg;
+      CFGNOTE=msg;PRESETSEL="__cur";SHOWINTRO=false;CSTEP=0;DIR=1;changed();scrollTop();
     }catch(e){note.textContent=errCopy(e)||"Demande annulée.";if(e.code==="not_granted")hideAI();}
     finally{const b=$("aiFill");if(b)b.disabled=false;}};
 }
@@ -925,8 +1083,9 @@ function onField(e){const el=e.target;if(!el.dataset||!el.dataset.p)return;if(el
 document.addEventListener("click",e=>{
   if(e.target.matches("input[name=uiTheme]")){st.ui.theme=e.target.value;applyTheme();persist();return;}
   if(e.target.matches("[data-cmp]")){const id=e.target.dataset.cmp;st.compare=st.compare.filter(x=>x!==id);if(e.target.checked){st.compare.push(id);if(st.compare.length>3){st.compare.shift();toast("3 véhicules maximum : le plus ancien est retiré");}else toast("Ajouté au comparateur");}persist();updCmp();return;}
-  const t=e.target.closest("[data-step],[data-acc],[data-sreset],[data-gedit],[data-ghide],[data-gdel],[data-uncmp],[data-ptab],[data-fin]");if(!t)return;
-  if(t.dataset.step!=null){CSTEP=+t.dataset.step;renderConfig();}
+  const t=e.target.closest("[data-edit],[data-step],[data-acc],[data-sreset],[data-gedit],[data-ghide],[data-gdel],[data-uncmp],[data-ptab],[data-fin]");if(!t)return;
+  if(t.dataset.edit!=null){CSTEP=+t.dataset.edit;SHOWINTRO=false;DIR=1;CFGNOTE="";if(location.hash==="#configuration")renderConfig();else location.hash="configuration";}
+  else if(t.dataset.step!=null){const ns=+t.dataset.step;DIR=ns>=CSTEP?1:-1;CSTEP=ns;SHOWINTRO=false;CFGNOTE="";renderConfig();}
   else if(t.dataset.acc){st.ui.accent=t.dataset.acc;applyTheme();persist();renderLook();}
   else if(t.dataset.ptab){PTAB=t.dataset.ptab;renderParams();}
   else if(t.dataset.fin){FINV=t.dataset.fin;location.hash="financement";}
@@ -938,10 +1097,20 @@ document.addEventListener("click",e=>{
 });
 $("profSel").onchange=e=>{st.active=e.target.value;switchProfile();};
 $("profNew").onclick=newProfile;$("profMenu").onclick=profileMenu;
-window.addEventListener("hashchange",()=>{route();scrollTop();});
+window.addEventListener("hashchange",()=>{ANIM=true;route();scrollTop();});
+document.addEventListener("keydown",e=>{if(e.key!=="Enter"||e.isComposing)return;const t=e.target;
+  if(!t.closest||!t.closest("#v-configuration")||t.matches("textarea,button,select,summary,a"))return;
+  const b=$("nextStep")||$("finish")||$("startCfg");if(b){e.preventDefault();b.click();}});
 
 /* ---------- Démarrage ---------- */
 try{const raw=localStorage.getItem(LSK)||localStorage.getItem("carmatch.v2");if(raw)st=normalize(JSON.parse(raw));}catch(e){}
+(function splash(){const sp=$("splash");if(!sp)return;const n=$("spN");
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(n&&!reduce){n.textContent="0";const t0=performance.now()+100;const f=t=>{const k=Math.max(0,Math.min(1,(t-t0)/850));n.textContent=String(Math.round(100*(1-Math.pow(1-k,2))));if(k<1)requestAnimationFrame(f);};requestAnimationFrame(f);}
+  const done=()=>{if(sp.isConnected)sp.remove();};
+  sp.addEventListener("animationend",e=>{if(e.target===sp)done();});
+  sp.addEventListener("click",()=>sp.classList.add("gone"));
+  setTimeout(done,3200);})();
 applyTheme();renderProfiles();route();initStore();initSample();
 </script>
 
