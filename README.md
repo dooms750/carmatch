@@ -11,7 +11,6 @@ L'application tient compte de votre usage (kilométrage, longs trajets, recharge
 ## Fonctionnalités
 
 - **Configuration guidée** en 6 étapes (trajets, conduite, priorités, véhicule, finances, voiture de fonction), une question à la fois, avec le meilleur match affiché en direct.
-
 - **Ma voiture** : top 3 à regarder, motorisation conseillée, formule la plus avantageuse et coût mensuel réel. Ce coût inclut énergie, entretien, malus, prime, intérêts, et déduit la revente.
 - **Classement** filtrable d'une cinquantaine de modèles distribués en France, toutes origines et toutes silhouettes.
 - **Financement** : achat, LLD et voiture de fonction côte à côte pour le modèle de votre choix.
