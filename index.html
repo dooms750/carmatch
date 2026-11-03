@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="CarMatch : aide à la décision pour choisir sa voiture, sa motorisation et sa formule (achat, LLD, voiture de fonction) avec la fiscalité française 2026.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>CarMatch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: app bar + tab views (Recommandation / Comparer / Garage / Réglages); recommendation = profile rail + instrument-cluster results */
+:root{
+  --bg:#ECEFF2; --panel:#FFFFFF; --sunk:#F3F5F7; --ink:#0F1820; --muted:#59666F; --line:#D4DBE1; --line2:#E5EAEE;
+  --accent-l:#D4421D; --accent-d:#F26A40; --accent:var(--accent-l); --on-accent:#FFFFFF;
+  --ok:#21754B; --ok-bg:#DDEFE4; --warn:#8F5C0E; --warn-bg:#F6EAD2;
+  --c2:#17798D; --c3:#6A52B5;
+  --bev:#17798D; --phev:#6A52B5; --hev:#7A6B1C; --ice:#8C4230;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A0F13; --panel:#121A20; --sunk:#0E151A; --ink:#E3EAEF; --muted:#8E9DA7; --line:#24313A; --line2:#1B262D;
+  --accent:var(--accent-d); --on-accent:#0A0F13;
+  --ok:#5AC08C; --ok-bg:#132A1F; --warn:#E2AA4C; --warn-bg:#2E230E;
+  --c2:#52BCD1; --c3:#A390EE; --bev:#52BCD1; --phev:#A390EE; --hev:#CDBB5B; --ice:#E58C74; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A0F13; --panel:#121A20; --sunk:#0E151A; --ink:#E3EAEF; --muted:#8E9DA7; --line:#24313A; --line2:#1B262D;
+  --accent:var(--accent-d); --on-accent:#0A0F13;
+  --ok:#5AC08C; --ok-bg:#132A1F; --warn:#E2AA4C; --warn-bg:#2E230E;
+  --c2:#52BCD1; --c3:#A390EE; --bev:#52BCD1; --phev:#A390EE; --hev:#CDBB5B; --ice:#E58C74; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 48px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3,h4{font-family:var(--display);font-stretch:112%;font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.005em}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hint{font-size:.78rem;color:var(--muted);margin:0}
+
+/* App bar */
+.appbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{flex:none}
+.brand h1{font-size:1.5rem;font-stretch:125%;font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.brand small{display:block;font-family:var(--mono);font-size:.68rem;color:var(--muted);letter-spacing:.08em;margin-top:3px}
+.bar-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.prof{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 12px}
+.prof select{border:0;background:transparent;font-family:var(--body);font-weight:600;font-size:.9rem;padding:4px 2px;color:var(--ink);max-width:170px}
+.ibtn{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:.82rem;display:inline-flex;align-items:center;gap:6px}
+.ibtn:hover{border-color:var(--accent)}
+.ibtn.solid{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.ibtn.ghost{border-color:transparent;background:transparent}
+.ibtn[disabled]{opacity:.5;cursor:not-allowed}
+.save{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+nav.tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;overflow-x:auto;max-width:100%}
+nav.tabs a{flex:none;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;padding:7px 14px;border-radius:999px}
+nav.tabs a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+.toprow{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+
+/* Panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.pad{padding:18px}
+.view{display:flex;flex-direction:column;gap:18px}
+.reco{display:grid;grid-template-columns:1fr;gap:18px}
+.reco .side{order:2;min-width:0;display:flex;flex-direction:column;gap:10px}
+.reco .main{order:1;min-width:0;display:flex;flex-direction:column;gap:18px}
+@media (min-width:1000px){
+  .reco{grid-template-columns:minmax(320px,370px) 1fr;align-items:start}
+  .reco .side{order:1;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;padding-right:3px}
+  .reco .main{order:2}
+}
+
+/* Forms */
+details.sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+details.sec>summary{cursor:pointer;list-style:none;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;
+  font-family:var(--display);font-stretch:112%;font-weight:700;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+details.sec[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.fields{padding:2px 14px 14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0;grid-column:span 2}
+.f.half{grid-column:span 1}
+.f>label,.f>.lab{font-size:.8rem;font-weight:500;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.f output{font-family:var(--mono);color:var(--ink);font-size:.8rem}
+input[type=number],input[type=text],select,textarea{width:100%;font:inherit;font-size:.9rem;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--sunk);color:var(--ink)}
+input[type=number]{font-family:var(--mono)}
+textarea{resize:vertical;min-height:84px;font-family:var(--body)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--sunk)}
+.seg label{flex:1;text-align:center;padding:6px 4px;font-size:.84rem;cursor:pointer;color:var(--muted)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--ink);color:var(--bg);font-weight:600}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-2px}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{display:flex;align-items:center;gap:6px;font-size:.84rem;padding:5px 10px;border:1px solid var(--line);border-radius:999px;cursor:pointer;background:var(--sunk)}
+.checks label:has(input:checked){border-color:var(--accent)}
+.checks input{accent-color:var(--accent)}
+.prio{grid-column:span 2;display:grid;grid-template-columns:118px 1fr 18px;align-items:center;gap:10px;font-size:.84rem}
+.prio output{font-family:var(--mono);text-align:right}
+
+/* AI */
+.ai{border:1px solid var(--line);border-radius:var(--r);background:
+  linear-gradient(var(--panel),var(--panel)) padding-box,
+  linear-gradient(120deg,var(--accent),var(--c2),var(--c3)) border-box;border:1.5px solid transparent;padding:14px;display:flex;flex-direction:column;gap:10px}
+.ai h3{font-size:1rem;display:flex;align-items:center;gap:8px}
+.spark{width:16px;height:16px;flex:none}
+.ai-out{font-size:.9rem;line-height:1.55;max-width:75ch}
+.ai-out p{margin:0 0 8px}.ai-out ul{margin:0 0 8px;padding-left:18px}
+.ai-msg{background:var(--accent-soft,var(--sunk));padding:6px 10px;border-radius:8px;font-size:.85rem}
+.ai-turn{border-top:1px dashed var(--line);padding-top:10px}
+.ai-turn .q{font-weight:600;font-size:.85rem;margin-bottom:4px}
+.ask{display:flex;gap:8px}
+.ask input{flex:1;min-width:0}
+.thinking{color:var(--muted);font-style:italic}
+.ai-note{font-size:.76rem;color:var(--muted)}
+
+/* Verdict cluster */
+.cluster{display:grid;grid-template-columns:auto 1fr;gap:18px 22px;align-items:center}
+@media (max-width:640px){.cluster{grid-template-columns:1fr}}
+.ring{position:relative;width:150px;height:150px}
+.ring svg{width:150px;height:150px;transform:rotate(135deg)}
+.ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .val b{font-family:var(--display);font-stretch:100%;font-size:2.6rem;line-height:1}
+.ring .val span{font-family:var(--mono);font-size:.65rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.picks h2{font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.05}
+.picks h2 em{font-style:normal;color:var(--accent)}
+.picks .also{margin-top:6px;color:var(--muted);font-size:.9rem}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.tile{background:var(--sunk);border:1px solid var(--line2);border-radius:8px;padding:12px 14px;min-width:0}
+.tile b{display:block;font-family:var(--display);font-size:1.3rem;line-height:1.15;margin:3px 0}
+.tile small{color:var(--muted);font-size:.78rem}
+ul.why{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;max-width:82ch;font-size:.92rem}
+
+/* Modes */
+.mode{display:grid;grid-template-columns:160px 1fr;gap:4px 14px;align-items:center}
+.mode .name{font-weight:600;font-size:.92rem}
+.mode .name small{display:block;font-weight:400;color:var(--muted);font-size:.76rem}
+.bar{height:28px;background:var(--sunk);border-radius:6px;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--muted);opacity:.55;border-radius:6px}
+.bar.best i{background:var(--accent);opacity:1}
+.bar span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.8rem;font-weight:600;white-space:nowrap;color:var(--ink)}
+.bar.best span{color:var(--on-accent)}
+.mode .meta{grid-column:2;font-size:.76rem;color:var(--muted)}
+@media (max-width:560px){.mode{grid-template-columns:1fr}.mode .meta{grid-column:1}}
+.stack{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--sunk)}
+.stack i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* Cards */
+.rank-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.rank-head h2,.panel h2{font-size:1.25rem}
+.cards{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;grid-template-columns:40px 1fr;gap:4px 12px}
+.card.first{border-color:var(--accent)}
+.pos{font-family:var(--display);font-stretch:100%;font-size:1.8rem;line-height:1;color:var(--muted)}
+.card.first .pos{color:var(--accent)}
+.c-main{min-width:0;display:flex;flex-direction:column;gap:9px}
+.c-title{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.c-title h3{font-size:1.15rem}
+.pill{font-family:var(--mono);font-size:.66rem;padding:2px 7px;border-radius:999px;border:1px solid currentColor;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.e-BEV{color:var(--bev)}.e-PHEV{color:var(--phev)}.e-HEV{color:var(--hev)}.e-ICE{color:var(--ice)}
+.score{margin-left:auto;display:flex;align-items:center;gap:8px}
+.mini{width:62px;height:6px;background:var(--sunk);border-radius:3px;overflow:hidden;border:1px solid var(--line2)}
+.mini i{display:block;height:100%;background:var(--accent)}
+.score b{font-family:var(--mono);font-size:.95rem}
+.cmp{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted);cursor:pointer}
+.cmp input{accent-color:var(--accent)}
+.origin{font-size:.8rem;color:var(--muted)}
+.why1{font-size:.86rem;margin:0}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px 14px}
+.spec .k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.spec .v{font-family:var(--mono);font-size:.92rem}
+.chrono{position:relative;height:6px;background:var(--sunk);border-radius:3px;margin-top:5px;border:1px solid var(--line2)}
+.chrono i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.costs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px dashed var(--line);padding-top:9px}
+.costs .k{font-size:.7rem;color:var(--muted)}
+.costs .v{font-family:var(--mono);font-size:.9rem}
+.costs .best .v{color:var(--accent);font-weight:600}
+.notes{display:flex;flex-wrap:wrap;gap:6px}
+.note{font-size:.74rem;padding:3px 8px;border-radius:5px;background:var(--sunk);color:var(--muted)}
+.note.good{background:var(--ok-bg);color:var(--ok)}
+.note.bad{background:var(--warn-bg);color:var(--warn)}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:22px;color:var(--muted);background:var(--panel)}
+
+/* Compare */
+.cmpgrid{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:18px;align-items:start}
+@media (max-width:860px){.cmpgrid{grid-template-columns:1fr}}
+.radar{width:100%;max-width:380px;height:auto;display:block;margin:0 auto}
+.radar text{font-family:var(--body);font-size:11px;fill:var(--muted)}
+.tablewrap{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line2);white-space:nowrap}
+th{font-size:.72rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.top{color:var(--accent);font-weight:600}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+/* Garage */
+.gtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.gtools input[type=text]{max-width:260px}
+tr.off td{opacity:.45}
+td .act{display:flex;gap:4px}
+.tag{font-size:.68rem;font-family:var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 5px;margin-left:6px}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);padding:0;width:min(640px,calc(100vw - 32px))}
+dialog::backdrop{background:rgba(5,10,14,.55)}
+.dlg{padding:18px;display:flex;flex-direction:column;gap:14px}
+.dlg .fields{padding:0}
+.dlg-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+
+/* Settings */
+.setgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);padding:0}
+.swatch[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--panel) inset}
+.sec-actions{grid-column:span 2;display:flex;justify-content:flex-end}
+footer.hyp{font-size:.8rem;color:var(--muted)}
+footer.hyp ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;max-width:100ch}
+footer.hyp a{color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:.85rem;z-index:20}
+@media (prefers-reduced-motion:no-preference){
+  .bar i,.chrono i,.mini i{transition:width .4s cubic-bezier(.2,.7,.2,1)}
+  .ring circle.arc{transition:stroke-dasharray .6s cubic-bezier(.2,.7,.2,1)}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="appbar">
+    <div class="brand">
+      <svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="16" fill="none" stroke="var(--line)" stroke-width="4"/><path d="M7.7 30.3A16 16 0 1 1 30.3 30.3" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="60 100"/><path d="M19 19 L28 11" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/><circle cx="19" cy="19" r="2.6" fill="var(--ink)"/></svg>
+      <div><h1>Car<span style="color:var(--accent)">Match</span></h1><small>AIDE À LA DÉCISION · FISCALITÉ 2026</small></div>
+    </div>
+    <div class="bar-tools">
+      <div class="prof"><span class="eyebrow">Profil</span><select id="profSel" aria-label="Profil actif"></select>
+        <button class="ibtn ghost" id="profNew" type="button" title="Nouveau profil">＋</button>
+        <button class="ibtn ghost" id="profMenu" type="button" title="Renommer ou supprimer">⋯</button></div>
+      <span class="save" id="saveState">Chargement…</span>
+    </div>
+  </header>
+  <div class="toprow">
+    <nav class="tabs" aria-label="Sections">
+      <a href="#recommandation" data-v="recommandation">Recommandation</a>
+      <a href="#comparer" data-v="comparer">Comparer <span id="cmpCount"></span></a>
+      <a href="#garage" data-v="garage">Garage</a>
+      <a href="#reglages" data-v="reglages">Réglages</a>
+    </nav>
+  </div>
+
+  <section class="view" id="v-recommandation">
+    <div class="reco">
+      <aside class="side" id="profileForm" aria-label="Mon profil"></aside>
+      <div class="main" id="results"></div>
+    </div>
+  </section>
+  <section class="view" id="v-comparer" hidden></section>
+  <section class="view" id="v-garage" hidden></section>
+  <section class="view" id="v-reglages" hidden></section>
+
+  <footer class="hyp panel pad">
+    <h2 style="font-size:1rem;color:var(--ink)">Sources et limites</h2>
+    <ul>
+      <li>Prime « coup de pouce » CEE (remplace le bonus depuis juillet 2025), malus CO2 dès 108 g/km plafonné à 80 000 €, malus au poids dès 1 500 kg, abattement de 70 % sur l'avantage en nature des électriques éco-scorées jusqu'au 31/12/2027 : valeurs par défaut, toutes modifiables dans Réglages.</li>
+      <li>Fiches véhicules indicatives (fin 2026, version représentative). Corrigez-les ou ajoutez les vôtres dans Garage.</li>
+      <li>Non inclus : assurance, carte grise, pneus, frais de restitution LLD. Simulateur de comparaison, pas un conseil financier ou fiscal personnalisé.</li>
+      <li>Sources : <a href="https://www.go-electra.com/fr/newsroom/cee-bonus-for-electric-cars-in-2026/" target="_blank" rel="noopener">prime CEE 2026</a>, <a href="https://leocare.eu/fr/blog/annulation-malus-ecologique-2028/" target="_blank" rel="noopener">barème malus</a>, <a href="https://www.beev.co/blog/fiscalite/fiscalite-des-flottes-automobiles-en-2026-le-guide-complet/" target="_blank" rel="noopener">malus au poids</a>, <a href="https://calcforlife.com/fr/calcul-avantage-nature-voiture/" target="_blank" rel="noopener">avantage en nature 2026</a>.</li>
+    </ul>
+  </footer>
+</div>
+
+<dialog id="dlg"><form class="dlg" method="dialog" id="dlgForm"></form></dialog>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- Données ---------- */
+const V0 = [
+ {n:"Renault Scenic E-Tech 220 Grande Autonomie",e:"BEV",body:"suv",made:"France (Douai)",ep:1,eb:1,price:42500,hp:220,acc:7.9,trunk:545,range:625,kwh:17.0,mass:1890,eco:1,bat:1,tech:4,dc:150},
+ {n:"Peugeot e-3008 Grande Autonomie",e:"BEV",body:"suv",made:"France (Sochaux)",ep:1,eb:1,price:46500,hp:230,acc:8.8,trunk:520,range:680,kwh:16.5,mass:2100,eco:1,bat:1,tech:4,dc:160},
+ {n:"Peugeot e-3008 Dual Motor 325",e:"BEV",body:"suv",made:"France (Sochaux)",ep:1,eb:1,price:54000,hp:325,acc:6.0,trunk:520,range:500,kwh:18.0,mass:2260,eco:1,bat:1,tech:4,dc:160},
+ {n:"Skoda Elroq 85",e:"BEV",body:"suv",made:"Tchéquie (Mladá Boleslav)",ep:1,eb:1,price:41900,hp:286,acc:6.6,trunk:470,range:580,kwh:16.0,mass:2050,eco:1,tech:4,dc:175},
+ {n:"Skoda Elroq RS",e:"BEV",body:"suv",made:"Tchéquie (Mladá Boleslav)",ep:1,eb:1,price:51500,hp:340,acc:5.4,trunk:470,range:550,kwh:16.8,mass:2130,eco:1,tech:4,dc:185},
+ {n:"Skoda Enyaq RS",e:"BEV",body:"suv",made:"Tchéquie (Mladá Boleslav)",ep:1,eb:1,price:58000,hp:340,acc:5.4,trunk:585,range:550,kwh:17.5,mass:2250,eco:1,tech:4,dc:185},
+ {n:"Volkswagen ID.4 GTX",e:"BEV",body:"suv",made:"Allemagne (Zwickau)",ep:1,eb:1,price:57000,hp:340,acc:5.4,trunk:543,range:545,kwh:18.3,mass:2240,eco:1,tech:3,dc:175},
+ {n:"Volkswagen ID.7 Tourer GTX",e:"BEV",body:"break",made:"Allemagne (Emden)",ep:1,eb:1,price:63000,hp:340,acc:5.4,trunk:605,range:590,kwh:16.5,mass:2330,eco:1,tech:4,dc:200},
+ {n:"Cupra Born VZ",e:"BEV",body:"compacte",made:"Allemagne (Zwickau)",ep:1,eb:1,price:45000,hp:326,acc:5.7,trunk:385,range:590,kwh:16.0,mass:1900,eco:1,tech:4,dc:185},
+ {n:"Cupra Tavascan VZ",e:"BEV",body:"coupe",made:"Chine (Anhui)",ep:0,eb:1,price:56000,hp:340,acc:5.5,trunk:540,range:520,kwh:18.0,mass:2280,eco:0,tech:4,dc:135},
+ {n:"Audi Q4 e-tron 45 quattro",e:"BEV",body:"suv",made:"Allemagne (Zwickau)",ep:1,eb:1,price:59000,hp:286,acc:6.7,trunk:515,range:520,kwh:18.5,mass:2200,eco:1,tech:4,dc:175},
+ {n:"Audi Q6 e-tron quattro",e:"BEV",body:"suv",made:"Allemagne (Ingolstadt)",ep:1,eb:1,price:78000,hp:387,acc:5.9,trunk:526,range:610,kwh:18.0,mass:2350,eco:1,tech:5,dc:270},
+ {n:"BMW iX1 xDrive30",e:"BEV",body:"suv",made:"Allemagne (Ratisbonne)",ep:1,eb:1,price:58000,hp:313,acc:5.6,trunk:490,range:450,kwh:17.5,mass:2085,eco:1,tech:4,dc:130},
+ {n:"BMW iX3 50 xDrive",e:"BEV",body:"suv",made:"Hongrie (Debrecen)",ep:1,eb:1,price:69000,hp:469,acc:4.9,trunk:520,range:800,kwh:15.5,mass:2360,eco:1,tech:5,dc:400},
+ {n:"BMW i4 M50 xDrive",e:"BEV",body:"berline",made:"Allemagne (Munich)",ep:1,eb:1,price:72000,hp:601,acc:3.9,trunk:470,range:520,kwh:19.0,mass:2215,eco:1,tech:5,dc:205},
+ {n:"Mercedes CLA 350 4MATIC électrique",e:"BEV",body:"berline",made:"Hongrie (Kecskemét)",ep:1,eb:1,price:64000,hp:354,acc:4.9,trunk:506,range:770,kwh:13.0,mass:2100,eco:1,tech:5,dc:320},
+ {n:"Volvo EX40 Twin Motor Performance",e:"BEV",body:"suv",made:"Belgique (Gand)",ep:1,eb:1,price:60000,hp:442,acc:4.8,trunk:452,range:505,kwh:19.0,mass:2190,eco:1,tech:4,dc:200},
+ {n:"Volvo EX30 Twin Motor Performance",e:"BEV",body:"cross",made:"Belgique (Gand)",ep:1,eb:1,price:46500,hp:428,acc:3.6,trunk:318,range:450,kwh:17.0,mass:1960,eco:1,tech:4,dc:153},
+ {n:"Alpine A390 GT",e:"BEV",body:"coupe",made:"France (Dieppe)",ep:1,eb:1,price:67000,hp:400,acc:4.8,trunk:532,range:555,kwh:18.5,mass:2120,eco:1,bat:1,tech:4,dc:190},
+ {n:"Alpine A390 GTS",e:"BEV",body:"coupe",made:"France (Dieppe)",ep:1,eb:1,price:78000,hp:470,acc:3.9,trunk:532,range:520,kwh:19.0,mass:2130,eco:1,bat:1,tech:4,dc:190},
+ {n:"Alpine A290 GTS",e:"BEV",body:"compacte",made:"France (Douai)",ep:1,eb:1,price:42000,hp:220,acc:6.4,trunk:326,range:360,kwh:15.6,mass:1480,eco:1,bat:1,tech:4,dc:100},
+ {n:"Renault Mégane E-Tech 220",e:"BEV",body:"cross",made:"France (Douai)",ep:1,eb:1,price:39000,hp:220,acc:7.4,trunk:440,range:450,kwh:16.1,mass:1650,eco:1,bat:1,tech:4,dc:130},
+ {n:"Tesla Model Y Grande Autonomie AWD",e:"BEV",body:"suv",made:"Allemagne (Grünheide)",ep:1,eb:0,price:49990,hp:514,acc:4.8,trunk:854,range:600,kwh:15.5,mass:2000,eco:1,tech:5,dc:250},
+ {n:"Tesla Model Y Performance",e:"BEV",body:"suv",made:"Allemagne (Grünheide)",ep:1,eb:0,price:61990,hp:460,acc:3.5,trunk:854,range:580,kwh:16.5,mass:2050,eco:1,tech:5,dc:250},
+ {n:"Tesla Model 3 Grande Autonomie AWD",e:"BEV",body:"berline",made:"Chine (Shanghai)",ep:0,eb:0,price:49990,hp:498,acc:4.4,trunk:682,range:629,kwh:14.5,mass:1850,eco:0,tech:5,dc:250},
+ {n:"Tesla Model 3 Performance",e:"BEV",body:"berline",made:"Chine (Shanghai)",ep:0,eb:0,price:56990,hp:460,acc:3.1,trunk:682,range:528,kwh:15.5,mass:1890,eco:0,tech:5,dc:250},
+ {n:"Polestar 4 Long Range Dual Motor",e:"BEV",body:"coupe",made:"Corée du Sud (Busan)",ep:0,eb:1,price:70000,hp:544,acc:3.8,trunk:526,range:590,kwh:18.5,mass:2355,eco:0,tech:5,dc:200},
+ {n:"Kia EV6 GT",e:"BEV",body:"cross",made:"Corée du Sud",ep:0,eb:0,price:72000,hp:650,acc:3.5,trunk:480,range:425,kwh:21.0,mass:2200,eco:0,tech:4,dc:260},
+ {n:"Hyundai Ioniq 5 N",e:"BEV",body:"cross",made:"Corée du Sud",ep:0,eb:0,price:79000,hp:650,acc:3.4,trunk:480,range:448,kwh:23.0,mass:2200,eco:0,tech:5,dc:240},
+ {n:"MG4 XPOWER",e:"BEV",body:"compacte",made:"Chine",ep:0,eb:0,price:41000,hp:435,acc:3.8,trunk:363,range:385,kwh:17.5,mass:1800,eco:0,tech:3,dc:140},
+ {n:"BYD Seal AWD Excellence",e:"BEV",body:"berline",made:"Chine",ep:0,eb:0,price:50000,hp:530,acc:3.8,trunk:453,range:520,kwh:18.0,mass:2185,eco:0,tech:4,dc:150},
+ {n:"BYD Sealion 7 Excellence AWD",e:"BEV",body:"coupe",made:"Chine",ep:0,eb:0,price:52000,hp:530,acc:4.5,trunk:500,range:482,kwh:20.0,mass:2340,eco:0,tech:4,dc:230},
+ {n:"Xpeng G6 AWD Performance",e:"BEV",body:"suv",made:"Chine",ep:0,eb:0,price:50000,hp:487,acc:4.1,trunk:571,range:550,kwh:18.0,mass:2120,eco:0,tech:5,dc:280},
+ {n:"Xpeng G9 AWD Performance",e:"BEV",body:"suv",made:"Chine",ep:0,eb:0,price:66000,hp:551,acc:3.9,trunk:660,range:520,kwh:20.0,mass:2400,eco:0,tech:5,dc:300},
+ {n:"Peugeot 3008 Hybride rechargeable 195",e:"PHEV",body:"suv",made:"France (Sochaux)",ep:1,eb:1,price:46000,hp:195,acc:7.8,trunk:470,ev:85,fuel:6.5,co2:23,mass:1870,tech:4},
+ {n:"Renault Rafale E-Tech 4x4 300",e:"PHEV",body:"coupe",made:"Espagne (Palencia)",ep:1,eb:1,price:62000,hp:300,acc:6.4,trunk:452,ev:100,fuel:7.0,co2:15,mass:1980,tech:4},
+ {n:"Cupra Formentor VZ e-Hybrid 272",e:"PHEV",body:"cross",made:"Espagne (Martorell)",ep:1,eb:1,price:50000,hp:272,acc:7.0,trunk:345,ev:110,fuel:6.5,co2:16,mass:1780,tech:4},
+ {n:"Volkswagen Tiguan eHybrid 272",e:"PHEV",body:"suv",made:"Allemagne (Wolfsburg)",ep:1,eb:1,price:53000,hp:272,acc:7.4,trunk:490,ev:120,fuel:6.5,co2:14,mass:1850,tech:4},
+ {n:"BMW X1 xDrive30e",e:"PHEV",body:"suv",made:"Allemagne (Ratisbonne)",ep:1,eb:1,price:59000,hp:326,acc:5.7,trunk:490,ev:85,fuel:7.0,co2:22,mass:1990,tech:4},
+ {n:"BMW 330e xDrive Touring",e:"PHEV",body:"break",made:"Allemagne (Munich)",ep:1,eb:1,price:60000,hp:292,acc:5.9,trunk:410,ev:100,fuel:6.8,co2:20,mass:1900,tech:4},
+ {n:"Volvo XC60 T8 AWD",e:"PHEV",body:"suv",made:"Suède (Torslanda)",ep:1,eb:1,price:72000,hp:455,acc:4.9,trunk:468,ev:80,fuel:7.5,co2:22,mass:2150,tech:4},
+ {n:"Mercedes GLC 400e 4MATIC",e:"PHEV",body:"suv",made:"Allemagne (Brême)",ep:1,eb:1,price:80000,hp:381,acc:5.6,trunk:470,ev:120,fuel:7.5,co2:16,mass:2350,tech:5},
+ {n:"Skoda Kodiaq iV 204",e:"PHEV",body:"suv",made:"Tchéquie (Kvasiny)",ep:1,eb:1,price:50000,hp:204,acc:8.4,trunk:745,ev:115,fuel:6.5,co2:15,mass:1900,tech:4},
+ {n:"Toyota RAV4 Hybride rechargeable",e:"PHEV",body:"suv",made:"Japon",ep:0,eb:0,price:56000,hp:306,acc:6.0,trunk:520,ev:75,fuel:6.5,co2:22,mass:1910,tech:3},
+ {n:"BYD Seal U DM-i AWD",e:"PHEV",body:"suv",made:"Chine",ep:0,eb:0,price:45000,hp:324,acc:5.9,trunk:552,ev:70,fuel:6.0,co2:28,mass:2040,tech:4},
+ {n:"Renault Austral E-Tech full hybrid 200",e:"HEV",body:"suv",made:"Espagne (Palencia)",ep:1,eb:1,price:41000,hp:200,acc:8.4,trunk:555,fuel:4.8,co2:108,mass:1600,tech:4},
+ {n:"Renault Rafale E-Tech full hybrid 200",e:"HEV",body:"coupe",made:"Espagne (Palencia)",ep:1,eb:1,price:47000,hp:200,acc:8.9,trunk:535,fuel:4.7,co2:106,mass:1610,tech:4},
+ {n:"Skoda Octavia Combi RS 265",e:"ICE",body:"break",made:"Tchéquie (Mladá Boleslav)",ep:1,eb:1,price:50000,hp:265,acc:6.4,trunk:640,fuel:7.3,co2:165,mass:1550,tech:4},
+ {n:"Cupra Formentor VZ 333",e:"ICE",body:"cross",made:"Espagne (Martorell)",ep:1,eb:1,price:58000,hp:333,acc:4.9,trunk:420,fuel:8.4,co2:190,mass:1660,tech:4},
+ {n:"Volkswagen Tiguan R-Line 265 4Motion",e:"ICE",body:"suv",made:"Allemagne (Wolfsburg)",ep:1,eb:1,price:58000,hp:265,acc:5.9,trunk:652,fuel:8.2,co2:185,mass:1750,tech:4},
+ {n:"Skoda Kodiaq RS 265",e:"ICE",body:"suv",made:"Tchéquie (Kvasiny)",ep:1,eb:1,price:58000,hp:265,acc:6.4,trunk:845,fuel:8.0,co2:180,mass:1800,tech:4},
+].map(v=>({...v,id:v.n.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}));
+
+const EN={BEV:"Électrique",PHEV:"Hybride rechargeable",HEV:"Hybride",ICE:"Essence"};
+const BODY={suv:"SUV",coupe:"SUV coupé",cross:"Crossover",berline:"Berline",break:"Break",compacte:"Compacte"};
+const MN={buy:"Achat à crédit",lld:"LLD",fon:"Voiture de fonction"};
+const ACCENTS={rouge:["#D4421D","#F26A40","Rouge circuit"],bleu:["#2D5BE3","#6E95FF","Bleu électrique"],jade:["#0F8A64","#3FCB97","Vert jade"],ambre:["#B86E00","#F0A93A","Ambre"],violet:["#6D45E0","#A88CFF","Violet"],graphite:["#3A4752","#B7C3CC","Graphite"]};
+
+const DEF_P={km:15000,trips:4,tripKm:450,home:"maison",family:40,style:"sport",
+  w:{sport:5,coffre:4,budget:3,tech:3,sob:2,long:2,shape:2},
+  minTrunk:470,maxPrice:75000,shape:"all",origin:"all",en:{BEV:true,PHEV:true,HEV:true,ICE:true},
+  rfr:"sup",tmi:0.30,horizon:4,apport:10000,rate:4.5,rateLld:5.9,
+  fonction:"peutetre",startYear:2027,particip:0,fuelPaid:true};
+const PRESETS={
+  "Mon profil":{},
+  "Famille 2 enfants":{km:18000,family:80,style:"normal",w:{sport:1,coffre:5,budget:5,tech:2,sob:3,long:3,shape:4},minTrunk:550,maxPrice:55000,rfr:"inter",tmi:0.11},
+  "Gros rouleur":{km:35000,trips:20,tripKm:500,style:"normal",w:{sport:2,coffre:3,budget:4,tech:3,sob:5,long:5,shape:1},minTrunk:450},
+  "Plaisir sportif":{family:10,style:"sport",w:{sport:5,coffre:1,budget:2,tech:4,sob:1,long:2,shape:0},minTrunk:300,maxPrice:90000},
+};
+const DEF_S={
+  cee:{modeste:5700,inter:4700,sup:3500},sur:{modeste:2000,inter:1600,sup:1200},ceePrixMax:47000,ceeMasseMax:2400,
+  malusSeuil:108,malusPlafond:80000,poidsSeuil:1500,poidsT:[10,15,20,25,30],abBEV:600,abPHEV:100,
+  aenTaux:15,aenAb:70,aenPlaf:4641.6,aenFin:2027,cotis:22,
+  maint:{BEV:350,PHEV:650,HEV:550,ICE:700},rv4:{BEV:42,PHEV:45,HEV:55,ICE:48},remiseLld:6,
+  prix:{elec:0.21,fast:0.55,pub:0.40,travail:0.15,fuel:1.78}};
+
+const clone=o=>JSON.parse(JSON.stringify(o));
+function deepMerge(base,over){const o=clone(base);for(const k in over){if(over[k]&&typeof over[k]==="object"&&!Array.isArray(over[k])&&o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))o[k]=deepMerge(o[k],over[k]);else if(k in o)o[k]=over[k];}return o;}
+const getP=(o,p)=>p.split(".").reduce((a,k)=>a==null?a:a[k],o);
+function setP(o,p,val){const ks=p.split(".");let a=o;for(let i=0;i<ks.length-1;i++){a=a[ks[i]];}a[ks[ks.length-1]]=val;}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(Math.round(n));
+const eur=n=>fmt(n)+" €";
+const dec=n=>String(n).replace(".",",");
+const c01=x=>Math.max(0,Math.min(1,x));
+const $=id=>document.getElementById(id);
+
+/* ---------- État ---------- */
+let st={profiles:{"Mon profil":clone(DEF_P)},active:"Mon profil",S:clone(DEF_S),garage:{over:{},hidden:[],custom:[]},ui:{theme:"auto",accent:"rouge"},compare:[]};
+function normalize(raw){
+  const s=clone(st);
+  if(raw&&typeof raw==="object"){
+    if(raw.profiles&&typeof raw.profiles==="object"){s.profiles={};for(const k in raw.profiles)s.profiles[k]=deepMerge(DEF_P,raw.profiles[k]||{});}
+    if(!Object.keys(s.profiles).length)s.profiles={"Mon profil":clone(DEF_P)};
+    s.active=raw.active in s.profiles?raw.active:Object.keys(s.profiles)[0];
+    if(raw.S)s.S=deepMerge(DEF_S,raw.S);
+    if(raw.garage){s.garage={over:raw.garage.over||{},hidden:Array.isArray(raw.garage.hidden)?raw.garage.hidden:[],custom:Array.isArray(raw.garage.custom)?raw.garage.custom:[]};}
+    if(raw.ui)s.ui={theme:raw.ui.theme||"auto",accent:ACCENTS[raw.ui.accent]?raw.ui.accent:"rouge"};
+    if(Array.isArray(raw.compare))s.compare=raw.compare.slice(0,3);
+  }
+  return s;
+}
+const P=()=>st.profiles[st.active];
+const S=()=>st.S;
+
+/* ---------- Moteur ---------- */
+function vehicles(all){
+  const g=st.garage;
+  const list=V0.map(v=>({...v,...(g.over[v.id]||{}),builtin:true})).concat(g.custom.map(v=>({...v,custom:true})));
+  return all?list:list.filter(v=>!g.hidden.includes(v.id));
+}
+const CO2PTS=[[108,50],[109,75],[110,100],[111,125],[112,150],[116,230],[125,540],[130,983],[140,2205],[150,4279],[160,8770],[170,15500],[180,27000],[185,37000],[191,60000]];
+function malusCO2(g){const s=S();if(!g||g<s.malusSeuil)return 0;if(g>191)return s.malusPlafond;if(g<108)return 50;
+  for(let i=1;i<CO2PTS.length;i++){const [a,va]=CO2PTS[i-1],[b,vb]=CO2PTS[i];if(g<=b)return va+(vb-va)*(g-a)/(b-a);}return s.malusPlafond;}
+function malusPoids(v){const s=S();if(v.e==="BEV"&&v.eco)return 0;
+  const m=v.mass-(v.e==="BEV"?s.abBEV:v.e==="PHEV"?s.abPHEV:0),b=s.poidsSeuil;
+  const T=[[b,b+200,s.poidsT[0]],[b+200,b+300,s.poidsT[1]],[b+300,b+400,s.poidsT[2]],[b+400,b+500,s.poidsT[3]],[b+500,1e9,s.poidsT[4]]];
+  let t=0;for(const [lo,hi,r] of T)if(m>lo)t+=(Math.min(m,hi)-lo)*r;return t;}
+const malus=v=>Math.min(S().malusPlafond,malusCO2(v.e==="BEV"?0:v.co2)+malusPoids(v));
+function cee(v,p){const s=S();if(v.e!=="BEV"||!v.eco||v.price>s.ceePrixMax||v.mass>s.ceeMasseMax)return 0;return s.cee[p.rfr]+(v.bat?s.sur[p.rfr]:0);}
+function energy(v,p){
+  const s=S(),sf={eco:0.92,normal:1,sport:1.15}[p.style],load=1+p.family/100*0.05;
+  const L=Math.min(p.km*0.6,p.trips*p.tripKm),U=p.km-L;
+  const hp=p.home==="maison"?s.prix.elec:p.home==="travail"?s.prix.travail:s.prix.pub;
+  if(v.e==="BEV"){const c=(v.kwh||17)*1.1*sf*load;return{eur:U*c/100*hp+L*c*1.3/100*(0.7*s.prix.fast+0.3*hp),fuel:0};}
+  if(v.e==="PHEV"){const daily=U/280,evR=(v.ev||60)*0.75,sh=p.home==="non"?0.15:Math.min(1,evR/Math.max(daily,1))*0.9;
+    const el=U*sh*19*sf/100*hp,fu=(U*(1-sh)*v.fuel*sf*load+L*v.fuel*1.1*sf)/100*s.prix.fuel;return{eur:el+fu,fuel:fu};}
+  const k=v.e==="HEV"?[0.9,1.25]:[1.15,0.95];const fu=(U*v.fuel*k[0]*sf*load+L*v.fuel*k[1]*sf)/100*s.prix.fuel;return{eur:fu,fuel:fu};
+}
+function trip(v,p){if(v.e!=="BEV")return null;const sf={eco:0.92,normal:1,sport:1.12}[p.style];
+  const hw=v.range*0.68/sf,bat=v.range*v.kwh/100,l1=hw*0.9,l2=hw*0.7;
+  return{stops:p.tripKm<=l1?0:Math.ceil((p.tripKm-l1)/l2),min:Math.max(15,Math.min(45,Math.round(bat*0.7/((v.dc||100)*0.55)*60))),hw:Math.round(hw)};}
+function resale(v,p){const kmAdj=Math.max(0.8,Math.min(1.08,1-((p.km-15000)/5000)*0.02));return v.price*Math.pow(S().rv4[v.e]/100,p.horizon/4)*kmAdj;}
+function costs(v,p){
+  const s=S(),H=p.horizon,n=H*12,mal=malus(v),prime=cee(v,p),en=energy(v,p),mt=s.maint[v.e],rv=resale(v,p);
+  const need=v.price+mal-prime,ap=Math.min(p.apport,need),Pr=Math.max(0,need-ap),r=p.rate/100/12;
+  const mens=Pr===0?0:(r===0?Pr/n:Pr*r/(1-Math.pow(1+r,-n))),interest=mens*n-Pr;
+  const bt=need+interest+(en.eur+mt)*H-rv;
+  const buy={total:bt,month:bt/n,cash:ap,pay:mens,resale:rv,parts:{prix:v.price-prime,malus:mal,interets:interest,energie:en.eur*H,entretien:mt*H}};
+  const apL=Math.min(p.apport,0.2*v.price),rl=p.rateLld/100/12,cap=v.price*(1-s.remiseLld/100)+mal-prime-apL,vr=rv*0.97;
+  const loyer=(cap-vr)/n+(cap+vr)/2*rl+mt/12,lt=apL+loyer*n+en.eur*H;
+  const lld={total:lt,month:lt/n,cash:apL,pay:loyer};
+  let tax=0,a1=0,aL=0;
+  for(let y=0;y<H;y++){const yr=p.startYear+y;let aen=s.aenTaux/100*v.price;if(p.fuelPaid&&v.e!=="BEV")aen+=en.fuel;
+    const ab=(v.e==="BEV"&&v.eco&&yr<=s.aenFin)?Math.min(s.aenAb/100*aen,s.aenPlaf):0;
+    const net=Math.max(0,aen-ab-p.particip*12);if(y===0)a1=net;aL=net;tax+=net*(p.tmi+s.cotis/100);}
+  const ft=tax+p.particip*12*H+(p.fuelPaid?0:en.eur*H);
+  return{mal,prime,en:en.eur,rv,buy,lld,fon:{total:ft,month:ft/n,cash:0,aen1:a1,aenL:aL}};
+}
+function evaluate(p){
+  const ok=[],out={},bump=k=>out[k]=(out[k]||0)+1;
+  for(const v of vehicles()){
+    if(!p.en[v.e]){bump("motorisation");continue;}
+    if(p.origin==="prod"&&!v.ep){bump("hors Europe");continue;}
+    if(p.origin==="brand"&&!v.eb){bump("marque non européenne");continue;}
+    if(p.shape==="suv"&&!["suv","coupe","cross"].includes(v.body)){bump("silhouette");continue;}
+    if(v.trunk<p.minTrunk*0.92){bump("coffre");continue;}
+    if(v.price>p.maxPrice*1.08){bump("budget");continue;}
+    ok.push({v,c:costs(v,p),t:trip(v,p)});
+  }
+  if(!ok.length)return{list:[],out};
+  const showF=p.fonction!=="non",priv=x=>Math.min(x.c.buy.month,x.c.lld.month),minM=Math.min(...ok.map(priv));
+  for(const x of ok){const v=x.v,w=p.w;
+    const s={sport:c01((10-v.acc)/6.5),coffre:c01((v.trunk-300)/400),budget:c01(1-(priv(x)-minM)/(minM*1.5)),tech:(v.tech||3)/5,
+      sob:c01((0.15-x.c.en/p.km)/0.12),long:v.e==="BEV"?c01(1-x.t.stops*0.22-(p.home==="non"?0.3:0)):1,
+      shape:({suv:1,coupe:0.9,cross:0.6,break:0.35,berline:0.15,compacte:0.15})[v.body]??0.5};
+    let sw=0,sum=0;for(const k in w){sum+=w[k]*s[k];sw+=w[k];}
+    let sc=sw?sum/sw:0.5;
+    if(p.home==="non"&&v.e==="BEV")sc*=0.85;if(p.home==="non"&&v.e==="PHEV")sc*=0.8;
+    if(v.trunk<p.minTrunk)sc*=0.93;if(v.price>p.maxPrice)sc*=0.93;if(p.family>=60&&v.trunk<480)sc*=0.95;
+    x.s=s;x.score=Math.round(sc*100);
+    const m=[["buy",x.c.buy.month],["lld",x.c.lld.month]];if(showF)m.push(["fon",x.c.fon.month]);m.sort((a,b)=>a[1]-b[1]);x.best=m[0][0];
+  }
+  ok.sort((a,b)=>b.score-a.score);
+  return{list:ok,out};
+}
+
+/* ---------- Formulaires (schéma) ---------- */
+const PF=[
+ {t:"Vos trajets",f:[
+  {p:"km",l:"Kilométrage annuel",k:"range",min:5000,max:50000,step:1000,u:v=>fmt(v)+" km"},
+  {p:"trips",l:"Longs trajets / an",k:"num",min:0,max:80,half:1},
+  {p:"tripKm",l:"Distance (km, aller)",k:"num",min:100,max:1500,step:10,half:1},
+  {p:"home",l:"Recharge possible",k:"sel",o:[["maison","À domicile (maison, parking avec borne)"],["travail","Au travail seulement"],["non","Aucune, bornes publiques"]]}]},
+ {t:"Votre conduite",f:[
+  {p:"family",l:"Trajets en famille",k:"range",min:0,max:100,step:5,u:v=>v+" %"},
+  {p:"style",l:"Style",k:"seg",o:[["eco","Éco"],["normal","Normal"],["sport","Sportif"]]}]},
+ {t:"Vos priorités",f:[
+  {p:"w.sport",l:"Accélération 0-100",k:"prio"},{p:"w.coffre",l:"Coffre",k:"prio"},{p:"w.budget",l:"Coût total",k:"prio"},
+  {p:"w.tech",l:"Technologie",k:"prio"},{p:"w.sob",l:"Sobriété",k:"prio"},{p:"w.long",l:"Longs trajets",k:"prio"},{p:"w.shape",l:"Format SUV",k:"prio"}]},
+ {t:"Le véhicule",f:[
+  {p:"minTrunk",l:"Coffre mini (L)",k:"num",min:200,max:900,step:10,half:1},
+  {p:"maxPrice",l:"Prix max TTC (€)",k:"num",min:15000,max:200000,step:1000,half:1},
+  {p:"shape",l:"Silhouette",k:"sel",o:[["all","Toutes (berline, break, compacte, SUV)"],["suv","SUV et crossovers seulement"]]},
+  {p:"origin",l:"Origine",k:"sel",o:[["all","Toutes, distribuées en France"],["prod","Fabriquée en Europe"],["brand","Marque européenne"]]},
+  {p:"en",l:"Motorisations",k:"checks",o:[["BEV","Électrique"],["PHEV","Hybride rech."],["HEV","Hybride"],["ICE","Essence"]]}]},
+ {t:"Vos finances",f:[
+  {p:"rfr",l:"Revenu fiscal de référence",k:"sel",o:[["modeste","Ménage modeste"],["inter","Ménage intermédiaire"],["sup","Ménage aisé"]]},
+  {p:"tmi",l:"Tranche d'impôt",k:"sel",num:1,half:1,o:[["0","0 %"],["0.11","11 %"],["0.3","30 %"],["0.41","41 %"],["0.45","45 %"]]},
+  {p:"horizon",l:"Détention",k:"sel",num:1,half:1,o:[["3","3 ans"],["4","4 ans"],["5","5 ans"],["6","6 ans"]]},
+  {p:"apport",l:"Apport (€)",k:"num",min:0,max:200000,step:1000,half:1},
+  {p:"rate",l:"Taux crédit (%)",k:"num",min:0,max:15,step:0.1,half:1},
+  {p:"rateLld",l:"Taux implicite LLD (%)",k:"num",min:0,max:15,step:0.1}]},
+ {t:"Voiture de fonction",f:[
+  {p:"fonction",l:"Mon employeur peut en proposer une",k:"sel",o:[["oui","Oui"],["peutetre","Je ne sais pas, comparer"],["non","Non"]]},
+  {p:"startYear",l:"Mise à disposition",k:"sel",num:1,half:1,o:[["2026","Fin 2026"],["2027","2027"],["2028","2028"]]},
+  {p:"particip",l:"Participation (€/mois)",k:"num",min:0,max:2000,step:10,half:1},
+  {p:"fuelPaid",l:"Énergie payée par l'employeur",k:"tog"}]},
+];
+const SF=[
+ {t:"Prime « coup de pouce » CEE",f:[
+  {p:"cee.modeste",l:"Ménage modeste (€)",k:"num",half:1,step:100},{p:"cee.inter",l:"Intermédiaire (€)",k:"num",half:1,step:100},
+  {p:"cee.sup",l:"Aisé (€)",k:"num",half:1,step:100},{p:"sur.sup",l:"Surbonus batterie UE, aisé (€)",k:"num",half:1,step:100},
+  {p:"sur.inter",l:"Surbonus, intermédiaire (€)",k:"num",half:1,step:100},{p:"sur.modeste",l:"Surbonus, modeste (€)",k:"num",half:1,step:100},
+  {p:"ceePrixMax",l:"Prix max éligible (€ TTC)",k:"num",half:1,step:500},{p:"ceeMasseMax",l:"Masse max (kg)",k:"num",half:1,step:50}]},
+ {t:"Malus",f:[
+  {p:"malusSeuil",l:"Seuil CO2 (g/km)",k:"num",half:1},{p:"malusPlafond",l:"Plafond total (€)",k:"num",half:1,step:1000},
+  {p:"poidsSeuil",l:"Seuil malus poids (kg)",k:"num",half:1,step:50},{p:"poidsT.0",l:"€/kg 1re tranche",k:"num",half:1},
+  {p:"poidsT.1",l:"€/kg 2e tranche",k:"num",half:1},{p:"poidsT.2",l:"€/kg 3e tranche",k:"num",half:1},
+  {p:"poidsT.3",l:"€/kg 4e tranche",k:"num",half:1},{p:"poidsT.4",l:"€/kg au-delà",k:"num",half:1},
+  {p:"abBEV",l:"Abattement élec. non éco-scorée (kg)",k:"num",half:1,step:50},{p:"abPHEV",l:"Abattement hybride rech. (kg)",k:"num",half:1,step:50}]},
+ {t:"Voiture de fonction",f:[
+  {p:"aenTaux",l:"Forfait avantage en nature (% prix/an)",k:"num",half:1,step:0.5},{p:"aenAb",l:"Abattement électrique (%)",k:"num",half:1},
+  {p:"aenPlaf",l:"Plafond abattement (€/an)",k:"num",half:1,step:10},{p:"aenFin",l:"Abattement jusqu'en",k:"num",half:1,min:2025,max:2035},
+  {p:"cotis",l:"Cotisations salariales (%)",k:"num",half:1}]},
+ {t:"Coûts d'usage",f:[
+  {p:"maint.BEV",l:"Entretien électrique (€/an)",k:"num",half:1,step:10},{p:"maint.PHEV",l:"Entretien hybride rech. (€/an)",k:"num",half:1,step:10},
+  {p:"maint.HEV",l:"Entretien hybride (€/an)",k:"num",half:1,step:10},{p:"maint.ICE",l:"Entretien essence (€/an)",k:"num",half:1,step:10},
+  {p:"rv4.BEV",l:"Valeur à 4 ans, élec. (%)",k:"num",half:1},{p:"rv4.PHEV",l:"Valeur à 4 ans, hyb. rech. (%)",k:"num",half:1},
+  {p:"rv4.HEV",l:"Valeur à 4 ans, hybride (%)",k:"num",half:1},{p:"rv4.ICE",l:"Valeur à 4 ans, essence (%)",k:"num",half:1},
+  {p:"remiseLld",l:"Remise loueur LLD (%)",k:"num",half:1,step:0.5}]},
+ {t:"Prix de l'énergie",f:[
+  {p:"prix.elec",l:"Électricité maison (€/kWh)",k:"num",half:1,step:0.01},{p:"prix.fast",l:"Recharge rapide (€/kWh)",k:"num",half:1,step:0.01},
+  {p:"prix.pub",l:"Borne publique AC (€/kWh)",k:"num",half:1,step:0.01},{p:"prix.travail",l:"Recharge au travail (€/kWh)",k:"num",half:1,step:0.01},
+  {p:"prix.fuel",l:"Sans plomb (€/L)",k:"num",half:1,step:0.01}]},
+];
+const SPEC={};for(const g of PF)for(const f of g.f)SPEC[f.p]=f;
+
+function fieldHTML(f,obj,scope){
+  const id=scope+"__"+f.p.replace(/\./g,"_"),val=getP(obj,f.p),cls="f"+(f.half?" half":""),d=`data-scope="${scope}" data-p="${f.p}"`;
+  switch(f.k){
+    case "range":return `<div class="${cls}"><label for="${id}">${f.l}<output id="o_${id}">${f.u(val)}</output></label><input type="range" id="${id}" ${d} data-num="1" min="${f.min}" max="${f.max}" step="${f.step}" value="${val}"></div>`;
+    case "prio":return `<div class="prio"><label for="${id}">${f.l}</label><input type="range" id="${id}" ${d} data-num="1" min="0" max="5" step="1" value="${val}"><output id="o_${id}">${val}</output></div>`;
+    case "num":return `<div class="${cls}"><label for="${id}">${f.l}</label><input type="number" id="${id}" ${d} data-num="1" ${f.min!=null?`min="${f.min}"`:""} ${f.max!=null?`max="${f.max}"`:""} step="${f.step||1}" value="${val}"></div>`;
+    case "sel":return `<div class="${cls}"><label for="${id}">${f.l}</label><select id="${id}" ${d} ${f.num?'data-num="1"':""}>${f.o.map(([v,t])=>`<option value="${v}" ${String(val)===v||Number(val)===Number(v)&&f.num?"selected":""}>${t}</option>`).join("")}</select></div>`;
+    case "seg":return `<div class="${cls}"><span class="lab">${f.l}</span><div class="seg" role="radiogroup" aria-label="${f.l}">${f.o.map(([v,t])=>`<label><input type="radio" name="${id}" ${d} value="${v}" ${val===v?"checked":""}>${t}</label>`).join("")}</div></div>`;
+    case "checks":return `<div class="${cls}"><span class="lab">${f.l}</span><div class="checks">${f.o.map(([v,t])=>`<label><input type="checkbox" id="${id}_${v}" data-scope="${scope}" data-p="${f.p}.${v}" data-bool="1" ${val[v]?"checked":""}>${t}</label>`).join("")}</div></div>`;
+    case "tog":return `<div class="${cls}"><div class="checks"><label><input type="checkbox" id="${id}" ${d} data-bool="1" ${val?"checked":""}>${f.l}</label></div></div>`;
+  }
+}
+function readInput(el){if(el.dataset.bool)return el.checked;if(el.dataset.num){const n=parseFloat(el.value);return Number.isFinite(n)?n:0;}return el.value;}
+
+/* ---------- Rendu profil ---------- */
+function renderProfileForm(){
+  const p=P();
+  $("profileForm").innerHTML=`
+  <div class="ai" id="aiDescribe">
+    <h3><svg class="spark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 5.2L15 7l-5.2 1.8L8 14l-1.8-5.2L1 7l5.2-1.8z" fill="var(--accent)"/></svg>Décrivez votre besoin</h3>
+    <textarea id="aiText" placeholder="Ex. : 4 trajets de 450 km par an, le reste en ville. Je veux un bon 0-100, un grand coffre, j'aime les SUV. Borne à la maison, TMI 30 %, ma boîte propose des voitures de fonction."></textarea>
+    <div class="ask"><button class="ibtn solid" type="button" id="aiFill">Régler mon profil</button><span class="ai-note" id="aiFillNote"></span></div>
+  </div>
+  ${PF.map((g,i)=>`<details class="sec" ${i<3?"open":""}><summary>${g.t}</summary><div class="fields">${g.f.map(f=>fieldHTML(f,p,"p")).join("")}</div></details>`).join("")}`;
+  wireAI();
+}
+
+/* ---------- Rendu résultats ---------- */
+function whyLine(x,p){const v=x.v,b=[];
+  if(v.acc<=5)b.push(`0-100 en ${dec(v.acc)} s`);if(v.trunk>=540)b.push(`grand coffre (${v.trunk} L)`);
+  if(x.c.prime>0)b.push(`prime CEE ${eur(x.c.prime)}`);if(x.c.mal>=1000)b.push(`${eur(x.c.mal)} de malus`);
+  if(v.e==="BEV"&&x.t)b.push(x.t.stops===0?`${p.tripKm} km sans recharge`:`${x.t.stops} arrêt${x.t.stops>1?"s":""} sur ${p.tripKm} km`);
+  if(v.e==="PHEV")b.push(`${v.ev} km en électrique`);return b.slice(0,4).join(" · ");}
+let LAST=null;
+function renderResults(){
+  const p=P(),{list,out}=evaluate(p),R=$("results");LAST={p,list};
+  if(!list.length){R.innerHTML=`<div class="empty"><h2>Aucun véhicule ne passe vos filtres</h2><p>Élargissez l'origine, baissez le coffre minimum ou ajoutez une motorisation. Écartés : ${Object.entries(out).map(([k,n])=>`${n} (${k})`).join(", ")}.</p></div>`;return;}
+  const top=list[0],showF=p.fonction!=="non",m=top.c;
+  const modes=[["buy",m.buy],["lld",m.lld]].concat(showF?[["fon",m.fon]]:[]);
+  const bm=modes.slice().sort((a,b)=>a[1].month-b[1].month)[0],privBest=m.buy.month<=m.lld.month?"buy":"lld";
+  const other=list.find(x=>x.v.e!==top.v.e),eTop=top.v.e,why=[];
+  if(eTop==="BEV"){
+    why.push(`${top.v.n} : 0-100 en ${dec(top.v.acc)} s${top.c.mal?`, malus ${eur(top.c.mal)}`:", sans malus"}.`);
+    if(top.t)why.push(`Vos ${p.trips} longs trajets de ${p.tripKm} km : ${top.t.stops===0?"faisables sans recharge":`${top.t.stops} arrêt${top.t.stops>1?"s":""} d'environ ${top.t.min} min`} (autonomie autoroute estimée ${top.t.hw} km).`);
+    const nb=list.find(x=>x.v.e!=="BEV");if(nb)why.push(`Énergie : ${eur(top.c.en)}/an, contre ${eur(nb.c.en)}/an pour le meilleur non-électrique (${nb.v.n}${nb.c.mal>0?`, ${eur(nb.c.mal)} de malus`:""}).`);
+  }else{
+    why.push(`${EN[eTop]} en tête : ${top.v.n} équilibre le mieux vos priorités.`);
+    if(p.home==="non")why.push("Sans recharge à domicile, l'électrique et l'hybride rechargeable perdent l'essentiel de leur intérêt financier.");
+    if(top.c.mal>0)why.push(`Malus de ${eur(top.c.mal)} à l'immatriculation, intégré dans les coûts.`);
+  }
+  if(bm[0]==="fon")why.push(`En voiture de fonction : environ ${eur(m.fon.month)}/mois pour vous${top.v.e==="BEV"&&top.v.eco?` (abattement de ${S().aenAb} % jusqu'en ${S().aenFin})`:""}. Sans fonction, ${MN[privBest].toLowerCase()} est le plus économique.`);
+  else why.push(`${MN[bm[0]]} revient le moins cher sur ${p.horizon} ans (${eur(bm[1].month)}/mois tout compris).`);
+  if(eTop==="BEV"&&!top.c.prime&&top.v.price>S().ceePrixMax&&top.v.eco)why.push(`Au-dessus de ${eur(S().ceePrixMax)} TTC, pas de prime CEE : une finition moins chère peut y ouvrir droit.`);
+  const C=2*Math.PI*62,arc=C*0.75,fill=arc*top.score/100;
+  const maxM=Math.max(...modes.map(x=>x[1].month));
+  const parts=m.buy.parts,ptot=Object.values(parts).reduce((a,b)=>a+Math.max(0,b),0);
+  const PC={prix:["Prix net de prime","var(--ink)"],malus:["Malus","var(--warn)"],interets:["Intérêts","var(--c3)"],energie:["Énergie","var(--c2)"],entretien:["Entretien","var(--muted)"]};
+  const exl=Object.entries(out).map(([k,n])=>`${n} ${k}`).join(" · ");
+  R.innerHTML=`
+  <section class="panel pad" style="display:flex;flex-direction:column;gap:16px">
+    <div class="cluster">
+      <div class="ring" role="img" aria-label="Adéquation ${top.score} sur 100">
+        <svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="62" fill="none" stroke="var(--sunk)" stroke-width="12" stroke-dasharray="${arc} ${C}" stroke-linecap="round"/>
+        <circle class="arc" cx="75" cy="75" r="62" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="${fill} ${C}" stroke-linecap="round"/></svg>
+        <div class="val"><b>${top.score}</b><span>adéquation</span></div>
+      </div>
+      <div class="picks"><div class="eyebrow">Regardez en priorité</div>
+        <h2><em>${esc(top.v.n)}</em></h2>
+        <div class="also">Puis : ${list.slice(1,4).map(x=>esc(x.v.n)).join(" · ")}</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><small>Motorisation conseillée</small><b>${EN[eTop]}</b><small>${other?`Alternative : ${EN[other.v.e].toLowerCase()}`:"Seule motorisation retenue"}</small></div>
+      <div class="tile"><small>Formule la plus avantageuse</small><b>${MN[bm[0]]}</b><small>${bm[0]==="fon"?`Sinon : ${MN[privBest].toLowerCase()}`:`sur ${p.horizon} ans`}</small></div>
+      <div class="tile"><small>Coût réel du n°1</small><b class="num">${eur(bm[1].month)}<span style="font-size:.8rem;font-weight:500"> /mois</span></b><small>tout compris, revente déduite</small></div>
+    </div>
+    <ul class="why">${why.map(w=>`<li>${esc(w)}</li>`).join("")}</ul>
+  </section>
+  <section class="ai" id="aiPanel">
+    <h3><svg class="spark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 5.2L15 7l-5.2 1.8L8 14l-1.8-5.2L1 7l5.2-1.8z" fill="var(--accent)"/></svg>L'avis de l'IA sur votre classement</h3>
+    <div id="aiThread" class="ai-out">${AIHTML||`<p class="ai-note">Claude lit votre profil et les chiffres calculés ici, puis vous dit quoi essayer, quelle formule choisir et à quoi faire attention.</p>`}</div>
+    <div class="ask">${AITURNS.length?`<input type="text" id="aiQ" placeholder="Posez une question : « et si je garde la voiture 6 ans ? »"><button class="ibtn solid" type="button" id="aiSend">Envoyer</button>`:`<button class="ibtn solid" type="button" id="aiGo">Demander l'avis de l'IA</button>`}<button class="ibtn" type="button" id="aiStop" hidden>Arrêter</button></div>
+  </section>
+  <section class="panel pad" style="display:flex;flex-direction:column;gap:12px">
+    <div><div class="eyebrow">${esc(top.v.n)}</div><h2>Acheter, louer ou fonction ?</h2></div>
+    ${modes.map(([k,o])=>{const best=k===bm[0];
+      const meta=k==="buy"?`Apport ${eur(o.cash)} · mensualité ${eur(o.pay)} · revente estimée ${eur(o.resale)}`:k==="lld"?`1er loyer ${eur(o.cash)} · loyer ${eur(o.pay)}/mois entretien inclus · rien à revendre`:`0 € à sortir · avantage en nature imposable ${eur(o.aen1)} la 1re année${Math.round(o.aenL)!==Math.round(o.aen1)?`, ${eur(o.aenL)} ensuite`:""}`;
+      return `<div class="mode"><div class="name">${MN[k]}<small>${eur(o.total)} sur ${p.horizon} ans</small></div><div class="bar ${best?"best":""}"><i style="width:${Math.max(20,o.month/maxM*100)}%"></i><span>${eur(o.month)}/mois</span></div><div class="meta">${meta}</div></div>`;}).join("")}
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+      <div class="eyebrow">Achat : où part l'argent sur ${p.horizon} ans (avant revente de ${eur(m.buy.resale)})</div>
+      <div class="stack">${Object.entries(parts).filter(([,v])=>v>0).map(([k,v])=>`<i style="width:${v/ptot*100}%;background:${PC[k][1]}" title="${PC[k][0]} ${eur(v)}"></i>`).join("")}</div>
+      <div class="legend">${Object.entries(parts).filter(([,v])=>v>0).map(([k,v])=>`<span><i style="background:${PC[k][1]}"></i>${PC[k][0]} ${eur(v)}</span>`).join("")}</div>
+    </div>
+    ${p.fonction==="peutetre"?`<p class="hint">La voiture de fonction suppose l'accord de votre employeur et remplace souvent une part de salaire : indiquez-la dans « Participation ».</p>`:""}
+  </section>
+  <section style="display:flex;flex-direction:column;gap:10px">
+    <div class="rank-head"><h2>Classement selon votre profil</h2><span class="hint">${list.length} retenus${exl?` · écartés : ${exl}`:""}</span></div>
+    <div class="cards">${list.slice(0,SHOWALL?list.length:8).map((x,i)=>cardHTML(x,i,p,showF)).join("")}</div>
+    ${list.length>8?`<button class="ibtn" type="button" id="more" style="align-self:flex-start">${SHOWALL?"Afficher les 8 premiers":`Afficher les ${list.length} véhicules`}</button>`:""}
+  </section>`;
+  const mb=$("more");if(mb)mb.onclick=()=>{SHOWALL=!SHOWALL;renderResults();};
+  wireAIPanel();
+}
+let SHOWALL=false;
+function cardHTML(x,i,p,showF){
+  const v=x.v,c=x.c,n=[];
+  if(c.prime>0)n.push(`<span class="note good">Prime CEE ${eur(c.prime)}</span>`);
+  if(c.mal>0)n.push(`<span class="note ${c.mal>=1000?"bad":""}">Malus ${eur(c.mal)}</span>`);
+  if(v.e==="BEV"&&v.eco&&showF)n.push(`<span class="note good">Avantage en nature −${S().aenAb} %</span>`);
+  if(!v.ep)n.push(`<span class="note bad">Fabriquée hors d'Europe : ni prime, ni abattement</span>`);
+  if(v.trunk<p.minTrunk)n.push(`<span class="note bad">Coffre un peu juste</span>`);
+  if(v.price>p.maxPrice)n.push(`<span class="note bad">Au-dessus du budget</span>`);
+  if(v.e==="PHEV"&&p.home==="non")n.push(`<span class="note bad">Peu utile sans recharge</span>`);
+  const auto=v.e==="BEV"?`${v.range} km`:v.e==="PHEV"?`${v.ev} km élec.`:`${dec(v.fuel)} L/100`;
+  const inC=st.compare.includes(v.id);
+  return `<article class="card ${i===0?"first":""}"><div class="pos">${i+1}</div><div class="c-main">
+    <div class="c-title"><h3>${esc(v.n)}</h3><span class="pill e-${v.e}">${EN[v.e]}</span>
+      <span class="score"><label class="cmp"><input type="checkbox" data-cmp="${esc(v.id)}" ${inC?"checked":""}>Comparer</label><span class="mini"><i style="width:${x.score}%"></i></span><b>${x.score}</b></span></div>
+    <div class="origin">${BODY[v.body]||v.body} · ${esc(v.made)} · ${fmt(v.price)} € TTC · ${v.hp} ch · ${fmt(v.mass)} kg</div>
+    <p class="why1">${esc(whyLine(x,p))}</p>
+    <div class="specs">
+      <div class="spec"><div class="k">0-100 km/h</div><div class="v">${dec(v.acc)} s</div><div class="chrono"><i style="width:${c01((v.acc-3)/7)*100}%"></i></div></div>
+      <div class="spec"><div class="k">Coffre</div><div class="v">${v.trunk} L</div></div>
+      <div class="spec"><div class="k">${v.e==="BEV"?"Autonomie WLTP":v.e==="PHEV"?"Autonomie élec.":"Conso. WLTP"}</div><div class="v">${auto}</div></div>
+      <div class="spec"><div class="k">Énergie / an</div><div class="v">${eur(c.en)}</div></div>
+    </div>
+    <div class="costs">
+      <div class="${x.best==="buy"?"best":""}"><div class="k">Achat</div><div class="v">${eur(c.buy.month)}/m</div></div>
+      <div class="${x.best==="lld"?"best":""}"><div class="k">LLD</div><div class="v">${eur(c.lld.month)}/m</div></div>
+      <div class="${x.best==="fon"?"best":""}"><div class="k">Fonction</div><div class="v">${showF?eur(c.fon.month)+"/m":"—"}</div></div>
+    </div>
+    ${n.length?`<div class="notes">${n.join("")}</div>`:""}
+  </div></article>`;
+}
+
+/* ---------- Comparer ---------- */
+function renderCompare(){
+  const p=P(),{list}=evaluate(p),all=vehicles(true);
+  let sel=st.compare.map(id=>list.find(x=>x.v.id===id)||(()=>{const v=all.find(z=>z.id===id);return v?{v,c:costs(v,p),t:trip(v,p),s:null,score:null}:null;})()).filter(Boolean);
+  const auto=!sel.length;if(auto)sel=list.slice(0,3);
+  const COLS=["var(--accent)","var(--c2)","var(--c3)"],AX=[["sport","Accélération"],["coffre","Coffre"],["budget","Coût"],["tech","Techno"],["sob","Sobriété"],["long","Longs trajets"]];
+  const cx=190,cy=170,R=120,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/AX.length;return[cx+Math.cos(a)*r,cy+Math.sin(a)*r];};
+  const grid=[0.25,0.5,0.75,1].map(k=>`<polygon points="${AX.map((_,i)=>pt(i,R*k).join(",")).join(" ")}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join("");
+  const axes=AX.map((a,i)=>{const [x,y]=pt(i,R),[lx,ly]=pt(i,R+22);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle">${a[1]}</text>`;}).join("");
+  const polys=sel.map((x,j)=>x.s?`<polygon points="${AX.map((a,i)=>pt(i,R*Math.max(0.04,x.s[a[0]])).join(",")).join(" ")}" fill="${COLS[j]}" fill-opacity=".14" stroke="${COLS[j]}" stroke-width="2"/>`:"").join("");
+  const rows=[
+    ["Score",x=>x.score??"—",1],["Prix TTC",x=>x.v.price,-1,eur],["0-100 km/h",x=>x.v.acc,-1,v=>dec(v)+" s"],["Puissance",x=>x.v.hp,1,v=>v+" ch"],
+    ["Coffre",x=>x.v.trunk,1,v=>v+" L"],["Autonomie",x=>x.v.e==="BEV"?x.v.range:x.v.e==="PHEV"?x.v.ev:null,1,v=>v==null?"—":v+" km"],
+    ["Masse",x=>x.v.mass,-1,v=>fmt(v)+" kg"],["Malus",x=>x.c.mal,-1,eur],["Prime CEE",x=>x.c.prime,1,eur],["Énergie / an",x=>x.c.en,-1,eur],
+    ["Achat / mois",x=>x.c.buy.month,-1,eur],["LLD / mois",x=>x.c.lld.month,-1,eur],["Fonction / mois",x=>x.c.fon.month,-1,eur],
+    ["Arrêts recharge / long trajet",x=>x.t?x.t.stops:0,-1,v=>String(v)],["Fabrication",x=>x.v.made,0]];
+  $("v-comparer").innerHTML=`
+  <div class="panel pad" style="display:flex;flex-direction:column;gap:14px">
+    <div class="rank-head"><h2>Comparer</h2><span class="hint">${auto?"Vos 3 premiers du classement. Cochez « Comparer » sur les fiches pour choisir.":"Jusqu'à 3 véhicules, choisis depuis le classement ou le garage."}</span></div>
+    <div class="cmpgrid">
+      <div><svg class="radar" viewBox="0 0 380 350" role="img" aria-label="Profil comparé des véhicules">${grid}${axes}${polys}</svg>
+        <div class="legend" style="justify-content:center">${sel.map((x,j)=>`<span><i style="background:${COLS[j]}"></i>${esc(x.v.n)}</span>`).join("")}</div></div>
+      <div class="tablewrap"><table><thead><tr><th></th>${sel.map((x,j)=>`<th><span class="sw" style="background:${COLS[j]}"></span>${esc(x.v.n)}${!auto?` <button class="ibtn ghost" data-uncmp="${esc(x.v.id)}" type="button" title="Retirer">×</button>`:""}</th>`).join("")}</tr></thead>
+      <tbody>${rows.map(([l,g,dir,f])=>{const vals=sel.map(g);const nums=vals.filter(v=>typeof v==="number");const best=dir&&nums.length>1?(dir>0?Math.max(...nums):Math.min(...nums)):null;
+        return `<tr><th scope="row">${l}</th>${vals.map(v=>`<td class="n ${best!=null&&v===best?"top":""}">${f?f(v):esc(v)}</td>`).join("")}</tr>`;}).join("")}</tbody></table></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Garage ---------- */
+let GQ="";
+const VF=[
+  {p:"n",l:"Nom du modèle",k:"txt"},{p:"e",l:"Énergie",k:"sel",half:1,o:Object.entries(EN)},{p:"body",l:"Silhouette",k:"sel",half:1,o:Object.entries(BODY)},
+  {p:"made",l:"Lieu de fabrication",k:"txt"},{p:"ep",l:"Fabriquée en Europe",k:"tog",half:1},{p:"eb",l:"Marque européenne",k:"tog",half:1},
+  {p:"price",l:"Prix TTC (€)",k:"num",half:1,step:100},{p:"hp",l:"Puissance (ch)",k:"num",half:1},
+  {p:"acc",l:"0-100 km/h (s)",k:"num",half:1,step:0.1},{p:"trunk",l:"Coffre (L)",k:"num",half:1},
+  {p:"mass",l:"Masse (kg)",k:"num",half:1,step:5},{p:"tech",l:"Technologie (1 à 5)",k:"num",half:1,min:1,max:5},
+  {p:"range",l:"Autonomie WLTP (km, électrique)",k:"num",half:1},{p:"kwh",l:"Conso. (kWh/100, électrique)",k:"num",half:1,step:0.1},
+  {p:"dc",l:"Recharge rapide max (kW)",k:"num",half:1},{p:"ev",l:"Autonomie élec. (km, hybride rech.)",k:"num",half:1},
+  {p:"fuel",l:"Conso. carburant (L/100)",k:"num",half:1,step:0.1},{p:"co2",l:"CO2 WLTP (g/km)",k:"num",half:1},
+  {p:"eco",l:"Éco-score (élec.)",k:"tog",half:1},{p:"bat",l:"Batterie européenne (surbonus)",k:"tog",half:1}];
+function renderGarage(){
+  const all=vehicles(true),g=st.garage,q=GQ.toLowerCase();
+  const rows=all.filter(v=>!q||v.n.toLowerCase().includes(q)||(v.made||"").toLowerCase().includes(q));
+  $("v-garage").innerHTML=`
+  <div class="panel pad" style="display:flex;flex-direction:column;gap:14px">
+    <div class="gtools"><div><h2>Garage</h2><p class="hint">${all.length} véhicules · ${g.hidden.length} masqués · ${g.custom.length} ajoutés · ${Object.keys(g.over).length} modifiés</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="gq" placeholder="Rechercher un modèle" value="${esc(GQ)}" aria-label="Rechercher">
+      <button class="ibtn solid" type="button" id="gAdd">Ajouter un véhicule</button><button class="ibtn" type="button" id="gIO">Importer / exporter</button><button class="ibtn" type="button" id="gReset">Revenir au catalogue</button></div></div>
+    <div class="tablewrap"><table><thead><tr><th>Modèle</th><th>Énergie</th><th>Silhouette</th><th>Fabrication</th><th>Prix</th><th>0-100</th><th>Coffre</th><th></th></tr></thead><tbody>
+    ${rows.map(v=>{const off=g.hidden.includes(v.id);return `<tr class="${off?"off":""}"><td>${esc(v.n)}${v.custom?'<span class="tag">ajouté</span>':g.over[v.id]?'<span class="tag">modifié</span>':""}</td><td><span class="pill e-${v.e}">${EN[v.e]}</span></td><td>${BODY[v.body]||esc(v.body)}</td><td>${esc(v.made||"")}</td><td class="n">${fmt(v.price)} €</td><td class="n">${dec(v.acc)} s</td><td class="n">${v.trunk} L</td>
+      <td><div class="act"><button class="ibtn" type="button" data-gedit="${esc(v.id)}">Modifier</button><button class="ibtn" type="button" data-ghide="${esc(v.id)}">${off?"Inclure":"Exclure"}</button>${v.custom?`<button class="ibtn" type="button" data-gdel="${esc(v.id)}">Supprimer</button>`:""}<label class="cmp"><input type="checkbox" data-cmp="${esc(v.id)}" ${st.compare.includes(v.id)?"checked":""}>Comparer</label></div></td></tr>`;}).join("")}
+    </tbody></table></div>
+  </div>`;
+  const gq=$("gq");gq.oninput=()=>{GQ=gq.value;const pos=gq.selectionStart;renderGarage();const n=$("gq");n.focus();n.setSelectionRange(pos,pos);};
+  $("gAdd").onclick=()=>editVehicle(null);$("gIO").onclick=ioDialog;
+  $("gReset").onclick=()=>confirmDlg("Revenir au catalogue d'origine ?","Vos véhicules ajoutés, modifications et exclusions seront effacés.","Réinitialiser",()=>{st.garage={over:{},hidden:[],custom:[]};changed();toast("Catalogue d'origine rétabli");});
+}
+function editVehicle(id){
+  const all=vehicles(true),v=id?clone(all.find(x=>x.id===id)):{n:"",e:"BEV",body:"suv",made:"",ep:1,eb:1,price:45000,hp:200,acc:7,trunk:450,mass:1900,tech:3,range:450,kwh:17,dc:150,ev:80,fuel:6.5,co2:120,eco:1,bat:0};
+  for(const k of ["ep","eb","eco","bat"])v[k]=!!v[k];
+  const html=`<h2>${id?"Modifier le véhicule":"Ajouter un véhicule"}</h2><div class="fields">${VF.map(f=>{
+    const fid="veh_"+f.p,val=v[f.p]??"";
+    if(f.k==="txt")return `<div class="f"><label for="${fid}">${f.l}</label><input type="text" id="${fid}" value="${esc(val)}" required></div>`;
+    if(f.k==="sel")return `<div class="f half"><label for="${fid}">${f.l}</label><select id="${fid}">${f.o.map(([k,t])=>`<option value="${k}" ${val===k?"selected":""}>${t}</option>`).join("")}</select></div>`;
+    if(f.k==="tog")return `<div class="f half"><div class="checks"><label><input type="checkbox" id="${fid}" ${val?"checked":""}>${f.l}</label></div></div>`;
+    return `<div class="f half"><label for="${fid}">${f.l}</label><input type="number" id="${fid}" step="${f.step||1}" value="${val}"></div>`;}).join("")}</div>
+    <div class="dlg-actions">${id&&v.builtin&&st.garage.over[id]?`<button class="ibtn" type="button" id="vRevert">Valeurs d'origine</button>`:""}<button class="ibtn" type="button" data-close="1">Annuler</button><button class="ibtn solid" type="submit" value="ok">Enregistrer</button></div>`;
+  openDlg(html,()=>{
+    const nv={};for(const f of VF){const el=$("veh_"+f.p);nv[f.p]=f.k==="tog"?(el.checked?1:0):f.k==="num"?(parseFloat(el.value)||0):el.value.trim();}
+    if(!nv.n)return false;
+    if(id&&v.builtin){const base=V0.find(x=>x.id===id),diff={};for(const k in nv)if(nv[k]!==(base[k]??(["ep","eb","eco","bat"].includes(k)?0:undefined)))diff[k]=nv[k];st.garage.over[id]=diff;}
+    else if(id){const i=st.garage.custom.findIndex(x=>x.id===id);st.garage.custom[i]={...nv,id};}
+    else st.garage.custom.push({...nv,id:"c-"+Date.now().toString(36)});
+    changed();toast(id?"Véhicule modifié":"Véhicule ajouté");return true;
+  });
+  const rv=$("vRevert");if(rv)rv.onclick=()=>{delete st.garage.over[id];$("dlg").close();changed();toast("Valeurs d'origine rétablies");};
+}
+function ioDialog(){
+  const data=JSON.stringify(st.garage.custom.length?st.garage.custom:[],null,1);
+  openDlg(`<h2>Importer / exporter</h2>
+   <div class="f"><label for="ioOut">Vos véhicules ajoutés (JSON)</label><textarea id="ioOut" readonly rows="5">${esc(data)}</textarea><div><button class="ibtn" type="button" id="ioCopy">Copier</button></div></div>
+   <div class="f"><label for="ioIn">Coller une liste de véhicules (JSON) pour l'ajouter</label><textarea id="ioIn" rows="5" placeholder='[{"n":"Mon modèle","e":"BEV","body":"suv","price":45000,"acc":6.5,"trunk":500,"range":500,"kwh":17,"mass":2000}]'></textarea><p class="hint" id="ioMsg"></p></div>
+   <div class="dlg-actions"><button class="ibtn" type="button" data-close="1">Fermer</button><button class="ibtn solid" type="submit" value="ok">Importer</button></div>`,()=>{
+     const t=$("ioIn").value.trim();if(!t)return true;
+     try{let arr=JSON.parse(t);if(!Array.isArray(arr))arr=[arr];let n=0;
+       for(const r of arr){if(!r||!r.n)continue;const b={e:"BEV",body:"suv",made:"",ep:0,eb:0,price:40000,hp:150,acc:8,trunk:400,mass:1800,tech:3,range:400,kwh:17,dc:100,ev:60,fuel:6.5,co2:120,eco:0};
+         const v={...b};for(const k in b)if(k in r)v[k]=typeof b[k]==="number"?(parseFloat(r[k])||0):String(r[k]);v.n=String(r.n);if(!EN[v.e])v.e="BEV";if(!BODY[v.body])v.body="suv";
+         v.id="c-"+Date.now().toString(36)+n;st.garage.custom.push(v);n++;}
+       changed();toast(n+" véhicule"+(n>1?"s":"")+" importé"+(n>1?"s":""));return true;
+     }catch(e){$("ioMsg").textContent="Ce texte n'est pas du JSON valide : vérifiez les guillemets et les virgules.";return false;}
+   });
+  $("ioCopy").onclick=async()=>{const ta=$("ioOut");try{await navigator.clipboard.writeText(ta.value);toast("Copié");}catch(e){ta.select();toast("Texte sélectionné, copiez-le");}};
+}
+
+/* ---------- Réglages ---------- */
+function renderSettings(){
+  $("v-reglages").innerHTML=`
+  <div class="setgrid">
+    <details class="sec" open><summary>Apparence</summary><div class="fields">
+      <div class="f"><span class="lab">Thème</span><div class="seg" role="radiogroup" aria-label="Thème">${[["auto","Auto"],["light","Clair"],["dark","Sombre"]].map(([v,t])=>`<label><input type="radio" name="uiTheme" value="${v}" ${st.ui.theme===v?"checked":""}>${t}</label>`).join("")}</div></div>
+      <div class="f"><span class="lab">Couleur d'accent <output>${ACCENTS[st.ui.accent][2]}</output></span><div class="swatches">${Object.entries(ACCENTS).map(([k,[l,d,t]])=>`<button type="button" class="swatch" data-acc="${k}" aria-pressed="${st.ui.accent===k}" title="${t}" aria-label="${t}" style="background:linear-gradient(135deg,${l} 50%,${d} 50%)"></button>`).join("")}</div></div>
+    </div></details>
+    ${SF.map((g,i)=>`<details class="sec" open><summary>${g.t}</summary><div class="fields">${g.f.map(f=>fieldHTML(f,st.S,"s")).join("")}<div class="sec-actions"><button class="ibtn" type="button" data-sreset="${i}">Valeurs par défaut</button></div></div></details>`).join("")}
+  </div>`;
+}
+
+/* ---------- Profils ---------- */
+function renderProfiles(){$("profSel").innerHTML=Object.keys(st.profiles).map(k=>`<option ${k===st.active?"selected":""}>${esc(k)}</option>`).join("");}
+function newProfile(){
+  openDlg(`<h2>Nouveau profil</h2><div class="fields">
+    <div class="f"><label for="npName">Nom</label><input type="text" id="npName" required placeholder="Ex. : Moi 2027, Conjoint…"></div>
+    <div class="f"><label for="npFrom">Partir de</label><select id="npFrom"><option value="__cur">Profil actuel (${esc(st.active)})</option>${Object.keys(PRESETS).map(k=>`<option value="${esc(k)}">Préréglage : ${esc(k)}</option>`).join("")}</select></div></div>
+    <div class="dlg-actions"><button class="ibtn" type="button" data-close="1">Annuler</button><button class="ibtn solid" type="submit" value="ok">Créer</button></div>`,()=>{
+    let n=$("npName").value.trim();if(!n)return false;while(st.profiles[n])n+=" bis";
+    const from=$("npFrom").value;st.profiles[n]=from==="__cur"?clone(P()):deepMerge(DEF_P,PRESETS[from]);st.active=n;AITURNS=[];AIHTML="";
+    renderProfiles();renderProfileForm();changed();toast("Profil « "+n+" » créé");return true;});
+}
+function profileMenu(){
+  const one=Object.keys(st.profiles).length<2;
+  openDlg(`<h2>Profil « ${esc(st.active)} »</h2><div class="fields"><div class="f"><label for="rpName">Renommer</label><input type="text" id="rpName" value="${esc(st.active)}"></div></div>
+   <div class="dlg-actions"><button class="ibtn" type="button" id="rpReset">Réinitialiser</button>${one?"":`<button class="ibtn" type="button" id="rpDel">Supprimer</button>`}<button class="ibtn" type="button" data-close="1">Fermer</button><button class="ibtn solid" type="submit" value="ok">Renommer</button></div>`,()=>{
+    const n=$("rpName").value.trim();if(!n||n===st.active)return true;if(st.profiles[n]){toast("Ce nom existe déjà");return false;}
+    const o={};for(const k in st.profiles)o[k===st.active?n:k]=st.profiles[k];st.profiles=o;st.active=n;renderProfiles();changed();return true;});
+  $("rpReset").onclick=()=>{st.profiles[st.active]=clone(DEF_P);$("dlg").close();renderProfileForm();changed();toast("Profil réinitialisé");};
+  const d=$("rpDel");if(d)d.onclick=()=>{const old=st.active;delete st.profiles[old];st.active=Object.keys(st.profiles)[0];$("dlg").close();AITURNS=[];AIHTML="";renderProfiles();renderProfileForm();changed();toast("Profil « "+old+" » supprimé");};
+}
+
+/* ---------- Dialogues, toast ---------- */
+let DLGCB=null;
+function openDlg(html,onOk){const d=$("dlg"),f=$("dlgForm");f.innerHTML=html;DLGCB=onOk;d.showModal();const first=f.querySelector("input,select,textarea");if(first)first.focus();}
+$("dlgForm").addEventListener("click",e=>{if(e.target.closest("[data-close]"))$("dlg").close();});
+$("dlgForm").addEventListener("submit",e=>{const sub=e.submitter;if(sub&&sub.value==="cancel"){return;}e.preventDefault();if(!DLGCB||DLGCB()!==false)$("dlg").close();});
+function confirmDlg(title,msg,label,fn){openDlg(`<h2>${esc(title)}</h2><p class="hint" style="font-size:.9rem">${esc(msg)}</p><div class="dlg-actions"><button class="ibtn" type="button" data-close="1">Annuler</button><button class="ibtn solid" type="submit" value="ok">${esc(label)}</button></div>`,()=>{fn();return true;});}
+let TT;function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(TT);TT=setTimeout(()=>el.hidden=true,2200);}
+
+/* ---------- IA (capacité sample) ---------- */
+let SAMPLE=null,AITURNS=[],AIHTML="",AICTL=null;
+const AIERR={not_granted:"Vous n'avez pas autorisé l'accès à Claude pour cette page.",rate_limited:"Trop de demandes d'un coup : réessayez dans un instant.",cancelled:""};
+const errCopy=e=>AIERR[e?.code]??"La réponse n'a pas pu arriver. Réessayez.";
+function mdLite(t){const lines=esc(t).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").split(/\n/);let h="",inL=false;
+  for(const l of lines){const m=l.match(/^\s*[-•]\s+(.*)/);if(m){if(!inL){h+="<ul>";inL=true;}h+=`<li>${m[1]}</li>`;}else{if(inL){h+="</ul>";inL=false;}if(l.trim())h+=`<p>${l}</p>`;}}
+  if(inL)h+="</ul>";return h;}
+function contextText(){
+  const {p,list}=LAST,s=S();
+  const prof=`Profil : ${p.km} km/an ; ${p.trips} longs trajets/an de ${p.tripKm} km ; reste urbain/périurbain ; recharge ${p.home} ; ${p.family} % des trajets en famille ; conduite ${p.style}. Priorités (0-5) : accélération ${p.w.sport}, coffre ${p.w.coffre}, coût ${p.w.budget}, techno ${p.w.tech}, sobriété ${p.w.sob}, longs trajets ${p.w.long}, format SUV ${p.w.shape}. Coffre mini ${p.minTrunk} L, prix max ${p.maxPrice} €. Origine : ${p.origin}. Revenus : ${p.rfr}, TMI ${Math.round(p.tmi*100)} %. Détention ${p.horizon} ans, apport ${p.apport} €, crédit ${p.rate} %, LLD ${p.rateLld} %. Voiture de fonction : ${p.fonction}, début ${p.startYear}, participation ${p.particip} €/mois, énergie payée par l'employeur : ${p.fuelPaid?"oui":"non"}.`;
+  const hyp=`Hypothèses : prime CEE ${s.cee[p.rfr]} € (+${s.sur[p.rfr]} € si batterie UE), électrique éco-scorée ≤ ${s.ceePrixMax} € et ≤ ${s.ceeMasseMax} kg ; malus CO2 dès ${s.malusSeuil} g/km, plafond ${s.malusPlafond} € ; malus poids dès ${s.poidsSeuil} kg ; avantage en nature ${s.aenTaux} % du prix/an, abattement électrique ${s.aenAb} % plafonné ${s.aenPlaf} €/an jusqu'en ${s.aenFin}.`;
+  const rows=list.slice(0,8).map((x,i)=>`${i+1}. ${x.v.n} | ${EN[x.v.e]} | ${BODY[x.v.body]} | fab. ${x.v.made} | ${x.v.price} € | 0-100 ${x.v.acc} s | coffre ${x.v.trunk} L | ${x.v.e==="BEV"?`autonomie ${x.v.range} km, ${x.t.stops} arrêt(s)/long trajet`:x.v.e==="PHEV"?`${x.v.ev} km élec.`:`${x.v.fuel} L/100`} | malus ${Math.round(x.c.mal)} € | prime ${x.c.prime} € | énergie ${Math.round(x.c.en)} €/an | achat ${Math.round(x.c.buy.month)} €/mois (revente ${Math.round(x.c.buy.resale)} €) | LLD ${Math.round(x.c.lld.month)} €/mois | fonction ${Math.round(x.c.fon.month)} €/mois | score ${x.score}`).join("\n");
+  return `${prof}\n${hyp}\nClassement calculé par l'outil (coûts mensuels tout compris sur la durée, revente déduite en achat) :\n${rows}`;
+}
+const AI_RULES="Tu es un conseiller automobile indépendant en France. Réponds en français, sans titre, en texte simple (paragraphes courts, puces commençant par « - », gras avec **). N'invente aucun chiffre : utilise ceux fournis. Si une donnée catalogue paraît douteuse, dis-le. Rappelle que ce n'est pas un conseil fiscal personnalisé uniquement si c'est utile.";
+async function runAI(question){
+  if(!SAMPLE)return;
+  const th=$("aiThread"),stop=$("aiStop");
+  const userMsg=question?`Contexte à jour :\n${contextText()}\n\nQuestion : ${question}`
+    :`${AI_RULES}\n\n${contextText()}\n\nDonne ton avis en 180 à 260 mots : une phrase de verdict ; 3 modèles à essayer en concession, chacun avec la raison ; électrique ou autre ; achat, LLD ou fonction avec les chiffres ; 2 points de vigilance (fiscalité, recharge, revente…).`;
+  const turns=question?[AITURNS[0],AITURNS[1],...AITURNS.slice(2).slice(-4),{role:"user",content:userMsg}]:[{role:"user",content:userMsg}];
+  const slot=document.createElement("div");
+  if(question){slot.className="ai-turn";slot.innerHTML=`<div class="q">${esc(question)}</div><div class="a thinking">Réflexion…</div>`;th.appendChild(slot);}
+  else{th.innerHTML=`<div class="a thinking">Réflexion…</div>`;slot.innerHTML="";}
+  const target=question?slot.querySelector(".a"):th.querySelector(".a");
+  AICTL=new AbortController();stop.hidden=false;
+  document.querySelectorAll("#aiGo,#aiSend").forEach(b=>b.disabled=true);
+  try{
+    const {text}=await SAMPLE(turns.length===1?turns[0].content:turns,{signal:AICTL.signal,cache:false,onText:({text})=>{target.classList.remove("thinking");target.innerHTML=mdLite(text);}});
+    target.classList.remove("thinking");target.innerHTML=mdLite(text);
+    if(!question)AITURNS=[{role:"user",content:userMsg},{role:"assistant",content:text}];
+    else AITURNS.push({role:"user",content:question},{role:"assistant",content:text});
+    AIHTML=th.innerHTML;
+    const ask=th.parentElement.querySelector(".ask");
+    if(!question){renderResults();return;}
+  }catch(e){target.classList.remove("thinking");target.innerHTML=(e.text?mdLite(e.text):"")+(errCopy(e)?`<p class="ai-note">${esc(errCopy(e))}</p>`:"");if(e.code==="not_granted")hideAI();}
+  finally{stop.hidden=true;document.querySelectorAll("#aiGo,#aiSend").forEach(b=>b.disabled=false);const q=$("aiQ");if(q){q.value="";}}
+}
+function wireAIPanel(){
+  const panel=$("aiPanel");if(!panel)return;
+  if(SAMPLE===false){panel.hidden=true;return;}
+  const go=$("aiGo"),send=$("aiSend"),q=$("aiQ"),stop=$("aiStop");
+  if(go)go.onclick=()=>runAI(null);
+  if(send)send.onclick=()=>{const t=q.value.trim();if(t)runAI(t);};
+  if(q)q.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();send.click();}};
+  stop.onclick=()=>AICTL?.abort();
+  if(SAMPLE===null){panel.querySelectorAll("button").forEach(b=>b.disabled=true);panel.querySelector(".ai-out").innerHTML=`<p class="ai-note">Connexion à Claude…</p>`;}
+}
+function wireAI(){
+  const box=$("aiDescribe");if(!box)return;
+  if(SAMPLE===false){box.hidden=true;return;}
+  $("aiFill").disabled=!SAMPLE;
+  $("aiFill").onclick=async()=>{
+    const txt=$("aiText").value.trim(),note=$("aiFillNote");if(!txt){note.textContent="Écrivez quelques phrases sur votre usage d'abord.";return;}
+    $("aiFill").disabled=true;note.textContent="Lecture de votre description…";
+    const schema=PF.flatMap(g=>g.f).map(f=>`${f.p} : ${f.k==="sel"||f.k==="seg"?f.o.map(o=>JSON.stringify(f.num?Number(o[0]):o[0])).join(" | "):f.k==="checks"?"objet {BEV,PHEV,HEV,ICE} de booléens":f.k==="tog"?"booléen":f.k==="prio"?"entier 0 à 5":`nombre${f.min!=null?` ${f.min} à ${f.max}`:""}`} (${f.l})`).join("\n");
+    try{
+      const r=await SAMPLE.json(`Transforme la description d'un acheteur de voiture en réglages pour un outil. Ne renseigne QUE les champs que la description permet de déduire ; laisse les autres absents. Les priorités w.* vont de 0 (indifférent) à 5 (essentiel). Champs possibles :\n${schema}\n\nProfil actuel : ${JSON.stringify(P())}\n\nDescription : """${txt}"""\n\nRéponds uniquement en JSON : {"changes": {...champs en notation imbriquée, ex. {"w":{"sport":5}}}, "resume": "une phrase en français de ce que tu as compris"}`,{modelTier:"quick"});
+      const n=applyChanges(r&&r.changes);
+      note.textContent=(r&&r.resume?r.resume+" ":"")+`(${n} réglage${n>1?"s":""} modifié${n>1?"s":""})`;
+      renderProfileForm();$("aiFillNote").textContent=note.textContent;$("aiText").value=txt;changed();
+    }catch(e){note.textContent=errCopy(e)||"Demande annulée.";if(e.code==="not_granted")hideAI();}
+    finally{const b=$("aiFill");if(b)b.disabled=false;}
+  };
+}
+function applyChanges(ch){
+  if(!ch||typeof ch!=="object")return 0;let n=0;const p=P();
+  const walk=(o,pre)=>{for(const k in o){const path=pre?pre+"."+k:k,v=o[k];
+    if(v&&typeof v==="object"&&!Array.isArray(v)){walk(v,path);continue;}
+    const spec=SPEC[path]||SPEC[pre];if(!spec)continue;
+    if(spec.k==="checks"){if(typeof v==="boolean"&&k in p.en){p.en[k]=v;n++;}continue;}
+    if(spec.k==="tog"){if(typeof v==="boolean"){setP(p,path,v);n++;}continue;}
+    if(spec.k==="sel"||spec.k==="seg"){const opts=spec.o.map(o=>o[0]);const sv=String(v);if(opts.includes(sv)){setP(p,path,spec.num?Number(sv):sv);n++;}else if(spec.num){const num=Number(v);const m=opts.find(o=>Number(o)===num);if(m!=null){setP(p,path,num);n++;}}continue;}
+    let num=Number(v);if(!Number.isFinite(num))continue;if(spec.k==="prio")num=Math.round(Math.max(0,Math.min(5,num)));
+    if(spec.min!=null)num=Math.max(spec.min,num);if(spec.max!=null)num=Math.min(spec.max,num);setP(p,path,num);n++;}};
+  walk(ch,"");return n;
+}
+function hideAI(){SAMPLE=false;const a=$("aiDescribe"),b=$("aiPanel");if(a)a.hidden=true;if(b)b.hidden=true;}
+
+/* ---------- Persistance (db privé, repli navigateur) ---------- */
+let DB=null,DOCREF=null,LASTSAVED="",SAVET=null;
+const LSK="carmatch.v2";
+function payload(){return{profiles:st.profiles,active:st.active,S:st.S,garage:st.garage,ui:st.ui,compare:st.compare};}
+function persist(){
+  const json=JSON.stringify(payload());try{localStorage.setItem(LSK,json);}catch(e){}
+  if(!DOCREF){$("saveState").textContent="Enregistré sur cet appareil";return;}
+  if(json===LASTSAVED)return;
+  clearTimeout(SAVET);$("saveState").textContent="Enregistrement…";
+  SAVET=setTimeout(async()=>{try{await DOCREF.set(JSON.parse(json));LASTSAVED=json;$("saveState").textContent="Enregistré dans votre compte";}catch(e){$("saveState").textContent="Enregistré sur cet appareil";}},1000);
+}
+async function initStore(){
+  if(!window.claude||!window.claude.use){$("saveState").textContent="Enregistré sur cet appareil";return;}
+  try{
+    const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+    if(!db||!user){$("saveState").textContent="Enregistré sur cet appareil";return;}
+    const uid=await user.id();if(!uid){$("saveState").textContent="Enregistré sur cet appareil";return;}
+    DOCREF=db.collection("data/users/"+uid).doc("cap");
+    const timer=setTimeout(()=>{$("saveState").textContent="Enregistré sur cet appareil";},10000);
+    const snap=await DOCREF.get();clearTimeout(timer);
+    if(snap.exists){const d=snap.data();LASTSAVED=JSON.stringify(d);st=normalize(d);applyTheme();renderAll();$("saveState").textContent="Enregistré dans votre compte";}
+    else{persist();}
+  }catch(e){DOCREF=null;$("saveState").textContent="Enregistré sur cet appareil";}
+}
+async function initSample(){
+  if(!window.claude||!window.claude.use){hideAI();return;}
+  try{const s=await window.claude.use("sample");if(!s){hideAI();return;}SAMPLE=s;wireAI();wireAIPanel();if(!AITURNS.length){const o=document.querySelector("#aiPanel .ai-out");if(o)o.innerHTML=`<p class="ai-note">Claude lit votre profil et les chiffres calculés ici, puis vous dit quoi essayer, quelle formule choisir et à quoi faire attention.</p>`;}document.querySelectorAll("#aiPanel button").forEach(b=>b.disabled=false);$("aiStop")&&($("aiStop").hidden=true);}
+  catch(e){hideAI();}
+}
+
+/* ---------- Thème ---------- */
+const HOSTTHEME=document.documentElement.getAttribute("data-theme");
+function applyTheme(){const r=document.documentElement,[l,d]=ACCENTS[st.ui.accent];r.style.setProperty("--accent-l",l);r.style.setProperty("--accent-d",d);
+  if(st.ui.theme==="auto"){if(HOSTTHEME)r.setAttribute("data-theme",HOSTTHEME);else r.removeAttribute("data-theme");}else r.setAttribute("data-theme",st.ui.theme);}
+
+/* ---------- Navigation ---------- */
+const VIEWS=["recommandation","comparer","garage","reglages"];
+function route(){const h=(location.hash||"").slice(1),v=VIEWS.includes(h)?h:"recommandation";
+  for(const x of VIEWS)$("v-"+x).hidden=x!==v;
+  document.querySelectorAll("nav.tabs a").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});
+  renderView(v);}
+function renderView(v){if(v==="recommandation")renderResults();else if(v==="comparer")renderCompare();else if(v==="garage")renderGarage();else renderSettings();}
+function current(){const h=(location.hash||"").slice(1);return VIEWS.includes(h)?h:"recommandation";}
+function renderAll(){renderProfiles();renderProfileForm();renderView(current());updCmp();}
+function updCmp(){$("cmpCount").textContent=st.compare.length?`(${st.compare.length})`:"";}
+function changed(){persist();updCmp();const v=current();if(v!=="recommandation")renderView(v);else renderResults();}
+
+/* ---------- Événements ---------- */
+document.addEventListener("input",onField);document.addEventListener("change",onField);
+function onField(e){const el=e.target;if(!el.dataset||!el.dataset.p)return;
+  const obj=el.dataset.scope==="s"?st.S:P();if(el.type==="radio"&&!el.checked)return;
+  setP(obj,el.dataset.p,readInput(el));
+  const o=$("o_"+el.id);if(o){const sp=SPEC[el.dataset.p];o.textContent=sp&&sp.u?sp.u(readInput(el)):readInput(el);}
+  if(el.dataset.scope==="s"){persist();return;}
+  if(e.type==="change"||el.type==="range"||el.type==="number")changed();}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-acc],[data-sreset],[data-gedit],[data-ghide],[data-gdel],[data-uncmp]");
+  if(e.target.matches("input[name=uiTheme]")){st.ui.theme=e.target.value;applyTheme();persist();return;}
+  if(e.target.matches("[data-cmp]")){const id=e.target.dataset.cmp;st.compare=st.compare.filter(x=>x!==id);if(e.target.checked){st.compare.push(id);if(st.compare.length>3){st.compare.shift();toast("3 véhicules maximum : le plus ancien est retiré");}}persist();updCmp();if(current()==="garage")renderGarage();return;}
+  if(!t)return;
+  if(t.dataset.acc){st.ui.accent=t.dataset.acc;applyTheme();persist();renderSettings();}
+  else if(t.dataset.sreset!=null){const g=SF[+t.dataset.sreset];for(const f of g.f)setP(st.S,f.p,clone(getP(DEF_S,f.p)));renderSettings();changed();toast("Valeurs par défaut rétablies");}
+  else if(t.dataset.gedit)editVehicle(t.dataset.gedit);
+  else if(t.dataset.ghide){const id=t.dataset.ghide,h=st.garage.hidden;st.garage.hidden=h.includes(id)?h.filter(x=>x!==id):h.concat(id);changed();}
+  else if(t.dataset.gdel){const id=t.dataset.gdel;confirmDlg("Supprimer ce véhicule ?","Il sera retiré de votre garage.","Supprimer",()=>{st.garage.custom=st.garage.custom.filter(v=>v.id!==id);st.compare=st.compare.filter(x=>x!==id);changed();});}
+  else if(t.dataset.uncmp){st.compare=st.compare.filter(x=>x!==t.dataset.uncmp);persist();updCmp();renderCompare();}
+});
+$("profSel").onchange=e=>{st.active=e.target.value;AITURNS=[];AIHTML="";renderProfileForm();changed();};
+$("profNew").onclick=newProfile;$("profMenu").onclick=profileMenu;
+window.addEventListener("hashchange",route);
+
+/* ---------- Démarrage ---------- */
+try{const raw=localStorage.getItem(LSK);if(raw)st=normalize(JSON.parse(raw));}catch(e){}
+applyTheme();renderProfiles();renderProfileForm();route();updCmp();
+initStore();initSample();
+</script>
+
+</body>
+</html>
