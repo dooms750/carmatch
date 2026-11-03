@@ -1065,7 +1065,7 @@ const HOSTTHEME=document.documentElement.getAttribute("data-theme");
 function applyTheme(){const r=document.documentElement,[l,d]=ACCENTS[st.ui.accent];r.style.setProperty("--accent-l",l);r.style.setProperty("--accent-d",d);
   if(st.ui.theme==="auto"){if(HOSTTHEME)r.setAttribute("data-theme",HOSTTHEME);else r.removeAttribute("data-theme");}else r.setAttribute("data-theme",st.ui.theme);}
 const VIEWS=["configuration","ma-voiture","classement","financement","comparer","parametres"];
-function current(){const h=(location.hash||"").slice(1);return VIEWS.includes(h)?h:(isDone()?"ma-voiture":"configuration");}
+function current(){const h=(location.hash||"").slice(1);return VIEWS.includes(h)?h:"configuration";}
 function route(){const v=current();for(const x of VIEWS)$("v-"+x).hidden=x!==v;
   document.querySelectorAll("nav.tabs a").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");a.classList.toggle("locked",!isDone()&&!["configuration","parametres"].includes(a.dataset.v));});
   renderView(v);updCmp();}
@@ -1111,6 +1111,7 @@ try{const raw=localStorage.getItem(LSK)||localStorage.getItem("carmatch.v2");if(
   sp.addEventListener("animationend",e=>{if(e.target===sp)done();});
   sp.addEventListener("click",()=>sp.classList.add("gone"));
   setTimeout(done,3200);})();
+try{if(location.hash&&location.hash!=="#configuration")history.replaceState(null,"","#configuration");}catch(e){}
 applyTheme();renderProfiles();route();initStore();initSample();
 </script>
 
