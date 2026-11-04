@@ -278,6 +278,13 @@ footer.hyp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:.9rem;z-index:20}
 @media (prefers-reduced-motion:no-preference){.ring circle.arc{transition:stroke-dasharray .6s cubic-bezier(.2,.7,.2,1)}.view{animation:fade .25s ease}@keyframes fade{from{opacity:.4}to{opacity:1}}}
 
+.brandchips{display:flex;flex-wrap:wrap;gap:8px}
+.bchip{border:1.5px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 14px;font-weight:500;font-size:.88rem;min-height:38px}
+.bchip:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.bchip.fav{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.bchip.exc{color:var(--muted);text-decoration:line-through;background:var(--sunk);border-style:dashed}
+.later{font-size:.76rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px;margin-top:4px}
+
 /* Splash */
 #splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--bg);animation:spOut .45s ease 1.95s forwards;cursor:pointer}
 #splash.gone{animation:spOut .25s ease forwards}
@@ -443,10 +450,10 @@ const V0 = [
  {n:"Alpine A390 GTS",e:"BEV",body:"coupe",made:"France (Dieppe)",ep:1,eb:1,price:78000,hp:470,acc:3.9,trunk:532,range:520,kwh:19.0,mass:2130,eco:1,bat:1,tech:4,dc:190},
  {n:"Alpine A290 GTS",e:"BEV",body:"compacte",made:"France (Douai)",ep:1,eb:1,price:42000,hp:220,acc:6.4,trunk:326,range:360,kwh:15.6,mass:1480,eco:1,bat:1,tech:4,dc:100},
  {n:"Renault Mégane E-Tech 220",e:"BEV",body:"cross",made:"France (Douai)",ep:1,eb:1,price:39000,hp:220,acc:7.4,trunk:440,range:450,kwh:16.1,mass:1650,eco:1,bat:1,tech:4,dc:130},
- {n:"Tesla Model Y Grande Autonomie AWD",e:"BEV",body:"suv",made:"Allemagne (Grünheide)",ep:1,eb:0,price:49990,hp:514,acc:4.8,trunk:854,range:600,kwh:15.5,mass:2000,eco:1,tech:5,dc:250},
- {n:"Tesla Model Y Performance",e:"BEV",body:"suv",made:"Allemagne (Grünheide)",ep:1,eb:0,price:61990,hp:460,acc:3.5,trunk:854,range:580,kwh:16.5,mass:2050,eco:1,tech:5,dc:250},
- {n:"Tesla Model 3 Grande Autonomie AWD",e:"BEV",body:"berline",made:"Chine (Shanghai)",ep:0,eb:0,price:49990,hp:498,acc:4.4,trunk:682,range:629,kwh:14.5,mass:1850,eco:0,tech:5,dc:250},
- {n:"Tesla Model 3 Performance",e:"BEV",body:"berline",made:"Chine (Shanghai)",ep:0,eb:0,price:56990,hp:460,acc:3.1,trunk:682,range:528,kwh:15.5,mass:1890,eco:0,tech:5,dc:250},
+ {n:"Tesla Model Y Grande Autonomie AWD",e:"BEV",body:"suv",made:"Allemagne (Grünheide)",ep:1,eb:0,price:49990,hp:514,acc:4.8,trunk:738,range:600,kwh:15.5,mass:2000,eco:1,tech:5,dc:250},
+ {n:"Tesla Model Y Performance",e:"BEV",body:"suv",made:"Allemagne (Grünheide)",ep:1,eb:0,price:61990,hp:460,acc:3.5,trunk:738,range:580,kwh:16.5,mass:2050,eco:1,tech:5,dc:250},
+ {n:"Tesla Model 3 Grande Autonomie AWD",e:"BEV",body:"berline",made:"Chine (Shanghai)",ep:0,eb:0,price:49990,hp:498,acc:4.4,trunk:594,range:629,kwh:14.5,mass:1850,eco:0,tech:5,dc:250},
+ {n:"Tesla Model 3 Performance",e:"BEV",body:"berline",made:"Chine (Shanghai)",ep:0,eb:0,price:56990,hp:460,acc:3.1,trunk:594,range:528,kwh:15.5,mass:1890,eco:0,tech:5,dc:250},
  {n:"Polestar 4 Long Range Dual Motor",e:"BEV",body:"coupe",made:"Corée du Sud (Busan)",ep:0,eb:1,price:70000,hp:544,acc:3.8,trunk:526,range:590,kwh:18.5,mass:2355,eco:0,tech:5,dc:200},
  {n:"Kia EV6 GT",e:"BEV",body:"cross",made:"Corée du Sud",ep:0,eb:0,price:72000,hp:650,acc:3.5,trunk:480,range:425,kwh:21.0,mass:2200,eco:0,tech:4,dc:260},
  {n:"Hyundai Ioniq 5 N",e:"BEV",body:"cross",made:"Corée du Sud",ep:0,eb:0,price:79000,hp:650,acc:3.4,trunk:480,range:448,kwh:23.0,mass:2200,eco:0,tech:5,dc:240},
@@ -472,9 +479,28 @@ const V0 = [
  {n:"Cupra Formentor VZ 333",e:"ICE",body:"cross",made:"Espagne (Martorell)",ep:1,eb:1,price:58000,hp:333,acc:4.9,trunk:420,fuel:8.4,co2:190,mass:1660,tech:4},
  {n:"Volkswagen Tiguan R-Line 265 4Motion",e:"ICE",body:"suv",made:"Allemagne (Wolfsburg)",ep:1,eb:1,price:58000,hp:265,acc:5.9,trunk:652,fuel:8.2,co2:185,mass:1750,tech:4},
  {n:"Skoda Kodiaq RS 265",e:"ICE",body:"suv",made:"Tchéquie (Kvasiny)",ep:1,eb:1,price:58000,hp:265,acc:6.4,trunk:845,fuel:8.0,co2:180,mass:1800,tech:4},
+ {n:"Volkswagen ID.5 GTX",e:"BEV",body:"coupe",made:"Allemagne (Zwickau)",ep:1,eb:1,price:59000,hp:340,acc:5.4,trunk:549,range:560,kwh:17.5,mass:2230,eco:1,tech:3,dc:185},
+ {n:"Ford Explorer Extended Range AWD",e:"BEV",body:"suv",made:"Allemagne (Cologne)",ep:1,eb:0,price:55000,hp:340,acc:5.3,trunk:470,range:566,kwh:18.0,mass:2170,eco:1,tech:4,dc:185},
+ {n:"Citroën ë-C5 Aircross Grande Autonomie",e:"BEV",body:"suv",made:"France (Rennes)",ep:1,eb:1,price:43000,hp:230,acc:8.9,trunk:565,range:520,kwh:16.5,mass:2000,eco:1,tech:3,dc:160},
+ {n:"Mercedes GLC 400 4MATIC électrique",e:"BEV",body:"suv",made:"Allemagne (Brême)",ep:1,eb:1,price:76000,hp:489,acc:4.3,trunk:570,range:713,kwh:15.8,mass:2400,eco:1,tech:5,dc:330},
+ {n:"Audi A6 Avant e-tron quattro",e:"BEV",body:"break",made:"Allemagne (Ingolstadt)",ep:1,eb:1,price:82000,hp:428,acc:5.4,trunk:502,range:700,kwh:16.0,mass:2300,eco:1,tech:5,dc:270},
+ {n:"BMW i5 Touring eDrive40",e:"BEV",body:"break",made:"Allemagne (Dingolfing)",ep:1,eb:1,price:78000,hp:340,acc:6.1,trunk:570,range:560,kwh:17.5,mass:2250,eco:1,tech:5,dc:205},
+ {n:"Porsche Macan 4 électrique",e:"BEV",body:"suv",made:"Allemagne (Leipzig)",ep:1,eb:1,price:92000,hp:408,acc:5.2,trunk:540,range:613,kwh:19.0,mass:2330,eco:1,tech:5,dc:270},
+ {n:"Hyundai Ioniq 5 84 kWh AWD",e:"BEV",body:"cross",made:"Corée du Sud",ep:0,eb:0,price:58000,hp:325,acc:5.3,trunk:520,range:460,kwh:19.5,mass:2210,eco:0,tech:5,dc:230},
+ {n:"Nissan Ariya e-4ORCE 87 kWh",e:"BEV",body:"suv",made:"Japon",ep:0,eb:0,price:60000,hp:306,acc:5.7,trunk:415,range:500,kwh:20.0,mass:2300,eco:0,tech:4,dc:130},
+ {n:"Toyota bZ4X AWD",e:"BEV",body:"suv",made:"Japon",ep:0,eb:0,price:52000,hp:343,acc:5.1,trunk:452,range:500,kwh:17.5,mass:2100,eco:0,tech:4,dc:150},
+ {n:"Ford Mustang Mach-E GT",e:"BEV",body:"cross",made:"Mexique",ep:0,eb:0,price:75000,hp:487,acc:3.7,trunk:402,range:490,kwh:20.0,mass:2270,eco:0,tech:4,dc:150},
+ {n:"Smart #3 Brabus",e:"BEV",body:"cross",made:"Chine",ep:0,eb:1,price:50000,hp:428,acc:3.7,trunk:370,range:415,kwh:17.5,mass:1910,eco:0,tech:5,dc:150},
+ {n:"Leapmotor C10 Grande Autonomie",e:"BEV",body:"suv",made:"Chine",ep:0,eb:0,price:36400,hp:218,acc:7.5,trunk:435,range:420,kwh:18.0,mass:1990,eco:0,tech:4,dc:84},
+ {n:"Audi Q5 TFSI e quattro 367",e:"PHEV",body:"suv",made:"Mexique (San José Chiapa)",ep:0,eb:1,price:72000,hp:367,acc:5.2,trunk:403,ev:100,fuel:7.5,co2:20,mass:2200,tech:5},
+ {n:"Mazda CX-60 e-Skyactiv PHEV",e:"PHEV",body:"suv",made:"Japon",ep:0,eb:0,price:52000,hp:327,acc:5.8,trunk:570,ev:63,fuel:7.5,co2:33,mass:2050,tech:4},
+ {n:"Lynk & Co 08 PHEV",e:"PHEV",body:"suv",made:"Chine",ep:0,eb:0,price:55000,hp:351,acc:6.8,trunk:535,ev:200,fuel:6.5,co2:17,mass:2240,tech:5},
+ {n:"Hyundai Tucson Hybrid 4WD",e:"HEV",body:"suv",made:"Tchéquie (Nošovice)",ep:1,eb:0,price:44000,hp:239,acc:8.3,trunk:616,fuel:5.9,co2:134,mass:1690,tech:4},
+ {n:"Toyota C-HR Hybrid 200",e:"HEV",body:"cross",made:"Turquie (Sakarya)",ep:0,eb:0,price:42000,hp:197,acc:8.1,trunk:364,fuel:4.8,co2:108,mass:1500,tech:4},
 ].map(v=>({...v,id:v.n.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}));
 
 
+const brandOf=v=>(v.b||(v.n||"").split(" ")[0]||"").replace(/^MG\d.*/,"MG");
 const EN={BEV:"Électrique",PHEV:"Hybride rechargeable",HEV:"Hybride",ICE:"Essence"};
 const BODY={suv:"SUV",coupe:"SUV coupé",cross:"Crossover",berline:"Berline",break:"Break",compacte:"Compacte"};
 const MN={buy:"Achat à crédit",lld:"LLD",fon:"Voiture de fonction"};
@@ -483,7 +509,7 @@ const DEF_P={km:15000,trips:4,tripKm:450,home:"maison",family:40,style:"sport",
   w:{sport:5,coffre:4,budget:2,tech:2,sob:2,long:2,shape:2},
   minTrunk:470,maxPrice:75000,shape:"all",origin:"all",en:{BEV:true,PHEV:true,HEV:true,ICE:true},
   rfr:"sup",tmi:0.30,horizon:4,apport:10000,rate:4.5,rateLld:5.9,
-  fonction:"peutetre",startYear:2027,particip:0,fuelPaid:true};
+  fonction:"peutetre",startYear:2027,particip:0,fuelPaid:true,favB:[],excB:[],div:"2"};
 const PRESETS={"Mon profil":{},
   "Famille 2 enfants":{km:18000,family:80,style:"normal",w:{sport:0,coffre:5,budget:5,tech:2,sob:4,long:4,shape:4},minTrunk:550,maxPrice:55000,rfr:"inter",tmi:0.11},
   "Gros rouleur":{km:35000,trips:20,tripKm:500,style:"normal",w:{sport:2,coffre:2,budget:4,tech:2,sob:5,long:5,shape:0},minTrunk:450},
@@ -566,6 +592,7 @@ function evaluate(p){
   const ok=[],out={},bump=k=>out[k]=(out[k]||0)+1;
   for(const v of vehicles()){
     if(!p.en[v.e]){bump("motorisation");continue;}
+    if((p.excB||[]).includes(brandOf(v))){bump("marque écartée");continue;}
     if(p.origin==="prod"&&!v.ep){bump("hors Europe");continue;}
     if(p.origin==="brand"&&!v.eb){bump("marque non européenne");continue;}
     if(p.shape==="suv"&&!["suv","coupe","cross"].includes(v.body)){bump("silhouette");continue;}
@@ -581,10 +608,15 @@ function evaluate(p){
     let sw=0,sum=0;for(const k in w){sum+=w[k]*s[k];sw+=w[k];}
     let sc=sw?sum/sw:0.5;
     if(p.home==="non"&&v.e==="BEV")sc*=0.85;if(p.home==="non"&&v.e==="PHEV")sc*=0.8;
+    if((p.favB||[]).includes(brandOf(v)))sc=Math.min(1,sc*1.07);
     if(v.trunk<p.minTrunk)sc*=0.93;if(v.price>p.maxPrice)sc*=0.93;if(p.family>=60&&v.trunk<480)sc*=0.95;
     x.s=s;x.score=Math.round(sc*100);
     const m=[["buy",x.c.buy.month],["lld",x.c.lld.month]];if(showF)m.push(["fon",x.c.fon.month]);m.sort((a,b)=>a[1]-b[1]);x.best=m[0][0];}
   ok.sort((a,b)=>b.score-a.score);
+  const cap=+p.div||0;
+  if(cap){const cnt={},main=[],later=[];for(const x of ok){const b=brandOf(x.v);cnt[b]=(cnt[b]||0)+1;if(cnt[b]>cap){x.dup=true;later.push(x);}else{x.dup=false;main.push(x);}}
+    return{list:main.concat(later),out};}
+  ok.forEach(x=>x.dup=false);
   return{list:ok,out};}
 let EVAL=null;function ev(){if(!EVAL)EVAL=evaluate(P());return EVAL;}
 
@@ -607,11 +639,13 @@ const STEPS=[
   {p:"w.sob",l:"Sobriété",d:"Consommation et énergie",k:"level"},
   {p:"w.long",l:"Aisance sur longs trajets",d:"Autonomie, recharge rapide",k:"level"},
   {p:"w.shape",l:"Format SUV",d:"Position haute, look baroudeur",k:"level"}]},
- {t:"Le véhicule",d:"Vos critères de taille, de budget et de motorisation.",sum:p=>`${p.minTrunk} L mini · ${fmt(p.maxPrice)} € max`,q:[
+ {t:"Le véhicule",d:"Vos critères de taille, de budget et de motorisation.",sum:p=>`${p.minTrunk} L mini · ${fmt(p.maxPrice)} € max${(p.favB||[]).length?` · ♥ ${p.favB.length}`:""}${(p.excB||[]).length?` · ✕ ${p.excB.length}`:""}`,q:[
   {p:"en",l:"Motorisations envisagées",k:"multi",o:[["BEV","Électrique","Zéro malus, recharge"],["PHEV","Hybride rechargeable","Électrique au quotidien"],["HEV","Hybride","Sans prise"],["ICE","Essence","Thermique classique"]]},
   {k:"row",q:[{p:"minTrunk",l:"Coffre minimum (L)",k:"num",min:200,max:900,step:10},{p:"maxPrice",l:"Prix maximum TTC (€)",k:"num",min:15000,max:200000,step:1000}]},
   {p:"shape",l:"Silhouette",k:"cards",o:[["all","Toutes","Berline, break, compacte, SUV"],["suv","SUV et crossovers","Uniquement les formats hauts"]]},
-  {p:"origin",l:"Origine",k:"cards",o:[["all","Toutes","Distribuées en France, Chine comprise"],["prod","Fabriquée en Europe","Donne accès aux aides"],["brand","Marque européenne","Usine partout dans le monde"]]}]},
+  {p:"origin",l:"Origine",k:"cards",o:[["all","Toutes","Distribuées en France, Chine comprise"],["prod","Fabriquée en Europe","Donne accès aux aides"],["brand","Marque européenne","Usine partout dans le monde"]]},
+  {k:"brands",l:"Vos marques",d:"Touchez une marque une fois pour la favoriser (♥), deux fois pour l'écarter (✕), trois fois pour revenir au neutre."},
+  {p:"div",l:"Variété du classement",k:"seg",o:[["2","2 modèles max par marque"],["1","1 par marque"],["0","Sans limite"]]}]},
  {t:"Vos finances",d:"Pour calculer les aides, la fiscalité et le coût du financement.",sum:p=>`TMI ${Math.round(p.tmi*100)} % · ${p.horizon} ans`,q:[
   {p:"rfr",l:"Votre niveau de revenus",d:"Il fixe le montant de la prime « coup de pouce » à l'achat d'une électrique.",k:"cards",o:[["modeste","Modeste","Prime la plus élevée"],["inter","Intermédiaire","Prime moyenne"],["sup","Aisé","Prime de base"]]},
   {p:"tmi",l:"Votre tranche d'impôt",k:"seg",num:1,o:[["0","0 %"],["0.11","11 %"],["0.3","30 %"],["0.41","41 %"],["0.45","45 %"]]},
@@ -628,6 +662,8 @@ let CSTEP=0;
 
 function qHTML(f,p){
   if(f.k==="row")return `<div class="row2">${f.q.map(x=>qHTML(x,p)).join("")}</div>`;
+  if(f.k==="brands"){const bs=[...new Set(vehicles().map(brandOf))].sort((a,b)=>a.localeCompare(b,"fr"));
+    return `<div class="q"><span class="ql">${f.l}</span><p class="qd">${f.d}</p><div class="brandchips">${bs.map(b=>brandChip(b,p)).join("")}</div></div>`;}
   if(f.k==="adv")return `<details class="adv"><summary>${f.l}</summary><div class="qs">${f.q.map(x=>qHTML(x,p)).join("")}</div></details>`;
   const id="p__"+f.p.replace(/\./g,"_"),val=getP(p,f.p),d=`data-scope="p" data-p="${f.p}"`,desc=f.d?`<p class="qd">${f.d}</p>`:"";
   switch(f.k){
@@ -639,6 +675,8 @@ function qHTML(f,p){
     case "level":{const cur=nearLv(val);return `<div class="prio"><div class="pl">${f.l}<small>${f.d}</small></div><div class="seg" role="radiogroup" aria-label="${f.l}">${LV.map(([v,t])=>`<label><input type="radio" name="${id}" ${d} data-num="1" value="${v}" ${cur===v?"checked":""}>${t}</label>`).join("")}</div></div>`;}
     case "tog":return `<label class="toggle"><input type="checkbox" id="${id}" ${d} data-bool="1" ${val?"checked":""}>${f.l}</label>`;
   }}
+function brandState(b,p){return (p.favB||[]).includes(b)?"fav":(p.excB||[]).includes(b)?"exc":"";}
+function brandChip(b,p){const s=brandState(b,p);return `<button type="button" class="bchip ${s}" data-brand="${esc(b)}" aria-label="${esc(b)} : ${s==="fav"?"favorite":s==="exc"?"écartée":"neutre"}">${s==="fav"?"♥ ":s==="exc"?"✕ ":""}${esc(b)}</button>`;}
 function readInput(el){if(el.dataset.bool)return el.checked;if(el.dataset.num){const n=parseFloat(el.value);return Number.isFinite(n)?n:0;}return el.value;}
 
 let SHOWINTRO=true,DIR=1,PRESETSEL="__cur",CFGNOTE="",ANIM=true,LASTTOP="";
@@ -730,6 +768,8 @@ function needConfig(v){return `<div class="panel pad empty"><h2>Commencez par la
 function noResult(out){return `<div class="panel pad empty"><h2>Aucun véhicule ne correspond</h2><p>Élargissez l'origine, baissez le coffre minimum ou ajoutez une motorisation. Écartés : ${Object.entries(out).map(([k,n])=>`${n} (${k})`).join(", ")}.</p><a class="btn" href="#configuration">Modifier mes critères</a></div>`;}
 function modesOf(x,p){const m=x.c,a=[["buy",m.buy],["lld",m.lld]];if(p.fonction!=="non")a.push(["fon",m.fon]);return a;}
 const bestMode=(x,p)=>modesOf(x,p).slice().sort((a,b)=>a[1].month-b[1].month)[0];
+function altsOf(list){const seen=new Set([brandOf(list[0].v)]),a=[];for(const x of list.slice(1)){if(a.length>=3)break;const b=brandOf(x.v);if(seen.has(b))continue;seen.add(b);a.push(x);}
+  for(const x of list.slice(1)){if(a.length>=3)break;if(!a.includes(x))a.push(x);}return a;}
 function renderMatch(){
   const V=$("v-ma-voiture");if(!isDone()){V.innerHTML=needConfig();return;}
   const p=P(),{list,out}=ev();if(!list.length){V.innerHTML=noResult(out);return;}
@@ -761,7 +801,7 @@ function renderMatch(){
     <div class="next"><a class="btn primary" href="#financement">Voir le détail du financement</a><a class="btn" href="#classement">Voir le classement complet</a></div>
   </div>
   <div class="stack"><h3>À regarder aussi</h3>
-    <div class="alts">${list.slice(1,4).map((x,i)=>`<div class="alt"><span class="r">N°${i+2} · ${x.score}/100</span><b>${esc(x.v.n)}</b><span class="m">${EN[x.v.e]} · ${dec(x.v.acc)} s · ${x.v.trunk} L · ${eur(bestMode(x,p)[1].month)}/mois</span></div>`).join("")}</div></div>
+    <div class="alts">${altsOf(list).map(x=>`<div class="alt"><span class="r">N°${list.indexOf(x)+1} · ${x.score}/100</span><b>${esc(x.v.n)}</b><span class="m">${EN[x.v.e]} · ${dec(x.v.acc)} s · ${x.v.trunk} L · ${eur(bestMode(x,p)[1].month)}/mois</span></div>`).join("")}</div></div>
   <section class="ai" id="aiPanel" ${SAMPLE===false?"hidden":""}>
     <h3><svg class="spark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l1.8 5.2L15 7l-5.2 1.8L8 14l-1.8-5.2L1 7l5.2-1.8z" fill="var(--accent)"/></svg>L'avis de l'IA</h3>
     <div id="aiThread" class="ai-out">${AIHTML||`<p class="hint">Claude relit votre profil et les chiffres calculés, puis vous dit quoi essayer en concession, quelle formule choisir et à quoi faire attention.</p>`}</div>
@@ -781,7 +821,7 @@ function renderRanking(){
   V.innerHTML=`
   <div class="stack" style="gap:6px"><h2>Classement</h2><p class="lead">${list.length} véhicules correspondent à votre profil${exl?` (écartés : ${exl})`:""}. Touchez une ligne pour le détail.</p></div>
   <div class="filters"><div class="seg" role="radiogroup" aria-label="Filtrer par motorisation" style="max-width:560px">${[["all","Toutes"],["BEV","Électrique"],["PHEV","Hyb. rech."],["HEV","Hybride"],["ICE","Essence"]].map(([v,t])=>`<label><input type="radio" name="rkf" value="${v}" ${RKF===v?"checked":""}>${t}</label>`).join("")}</div></div>
-  <div class="list">${rows.length?rows.map(x=>rowHTML(x,list.indexOf(x),p,showF)).join(""):`<div class="empty">Aucun véhicule de ce type dans votre sélection.</div>`}</div>`;
+  <div class="list">${rows.length?rows.map((x,k)=>(x.dup&&(k===0||!rows[k-1].dup)?`<p class="later">Autres versions des mêmes marques, placées ensuite pour varier le classement (réglable à l'étape « Le véhicule »).</p>`:"")+rowHTML(x,list.indexOf(x),p,showF)).join(""):`<div class="empty">Aucun véhicule de ce type dans votre sélection.</div>`}</div>`;
   V.querySelectorAll("input[name=rkf]").forEach(r=>r.onchange=()=>{RKF=r.value;renderRanking();});
 }
 function rowHTML(x,i,p,showF){
@@ -985,7 +1025,7 @@ function mdLite(t){const lines=esc(t).replace(/\*\*(.+?)\*\*/g,"<strong>$1</stro
   if(inL)h+="</ul>";return h;}
 function contextText(){
   const p=P(),{list}=ev(),s=S();
-  const prof=`Profil : ${p.km} km/an ; ${p.trips} longs trajets/an de ${p.tripKm} km ; reste urbain/périurbain ; recharge ${p.home} ; ${p.family} % en famille ; conduite ${p.style}. Priorités (0-5) : accélération ${p.w.sport}, coffre ${p.w.coffre}, coût ${p.w.budget}, techno ${p.w.tech}, sobriété ${p.w.sob}, longs trajets ${p.w.long}, format SUV ${p.w.shape}. Coffre mini ${p.minTrunk} L, prix max ${p.maxPrice} €. Origine : ${p.origin}. Revenus : ${p.rfr}, TMI ${Math.round(p.tmi*100)} %. Détention ${p.horizon} ans, apport ${p.apport} €, crédit ${p.rate} %, LLD ${p.rateLld} %. Voiture de fonction : ${p.fonction}, début ${p.startYear}, participation ${p.particip} €/mois, énergie payée par l'employeur : ${p.fuelPaid?"oui":"non"}.`;
+  const prof=`Profil : ${p.km} km/an ; ${p.trips} longs trajets/an de ${p.tripKm} km ; reste urbain/périurbain ; recharge ${p.home} ; ${p.family} % en famille ; conduite ${p.style}. Priorités (0-5) : accélération ${p.w.sport}, coffre ${p.w.coffre}, coût ${p.w.budget}, techno ${p.w.tech}, sobriété ${p.w.sob}, longs trajets ${p.w.long}, format SUV ${p.w.shape}. Coffre mini ${p.minTrunk} L, prix max ${p.maxPrice} €. Origine : ${p.origin}. Marques favorites : ${(p.favB||[]).join(", ")||"aucune"} ; écartées : ${(p.excB||[]).join(", ")||"aucune"}. Revenus : ${p.rfr}, TMI ${Math.round(p.tmi*100)} %. Détention ${p.horizon} ans, apport ${p.apport} €, crédit ${p.rate} %, LLD ${p.rateLld} %. Voiture de fonction : ${p.fonction}, début ${p.startYear}, participation ${p.particip} €/mois, énergie payée par l'employeur : ${p.fuelPaid?"oui":"non"}.`;
   const hyp=`Hypothèses : prime CEE ${s.cee[p.rfr]} € (+${s.sur[p.rfr]} € si batterie UE), électrique éco-scorée ≤ ${s.ceePrixMax} € et ≤ ${s.ceeMasseMax} kg ; malus CO2 dès ${s.malusSeuil} g/km, plafond ${s.malusPlafond} € ; malus poids dès ${s.poidsSeuil} kg ; avantage en nature ${s.aenTaux} % du prix/an, abattement électrique ${s.aenAb} % plafonné ${s.aenPlaf} €/an jusqu'en ${s.aenFin}.`;
   const rows=list.slice(0,8).map((x,i)=>`${i+1}. ${x.v.n} | ${EN[x.v.e]} | ${BODY[x.v.body]} | fab. ${x.v.made} | ${x.v.price} € | 0-100 ${x.v.acc} s | coffre ${x.v.trunk} L | ${x.v.e==="BEV"?`autonomie ${x.v.range} km, ${x.t.stops} arrêt(s)/long trajet`:x.v.e==="PHEV"?`${x.v.ev} km élec.`:`${x.v.fuel} L/100`} | malus ${Math.round(x.c.mal)} € | prime ${x.c.prime} € | énergie ${Math.round(x.c.en)} €/an | achat ${Math.round(x.c.buy.month)} €/mois (revente ${Math.round(x.c.buy.resale)} €) | LLD ${Math.round(x.c.lld.month)} €/mois | fonction ${Math.round(x.c.fon.month)} €/mois | score ${x.score}`).join("\n");
   return `${prof}\n${hyp}\nClassement calculé par l'outil (coûts mensuels tout compris, revente déduite en achat) :\n${rows}`;}
@@ -1082,6 +1122,10 @@ function onField(e){const el=e.target;if(!el.dataset||!el.dataset.p)return;if(el
   if(el.dataset.scope==="p"){updLive();const sb=document.querySelector(`.steps button[data-step="${CSTEP}"] .s`);if(sb)sb.textContent=STEPS[CSTEP].sum(P());}}
 document.addEventListener("click",e=>{
   if(e.target.matches("input[name=uiTheme]")){st.ui.theme=e.target.value;applyTheme();persist();return;}
+  const bc=e.target.closest("[data-brand]");
+  if(bc){const b=bc.dataset.brand,p=P();p.favB=p.favB||[];p.excB=p.excB||[];const s=brandState(b,p);
+    p.favB=p.favB.filter(x=>x!==b);p.excB=p.excB.filter(x=>x!==b);if(s==="")p.favB.push(b);else if(s==="fav")p.excB.push(b);
+    bc.outerHTML=brandChip(b,p);EVAL=null;persist();updLive();const sb=document.querySelector(`.steps button[data-step="${CSTEP}"] .s`);if(sb)sb.textContent=STEPS[CSTEP].sum(p);return;}
   if(e.target.matches("[data-cmp]")){const id=e.target.dataset.cmp;st.compare=st.compare.filter(x=>x!==id);if(e.target.checked){st.compare.push(id);if(st.compare.length>3){st.compare.shift();toast("3 véhicules maximum : le plus ancien est retiré");}else toast("Ajouté au comparateur");}persist();updCmp();return;}
   const t=e.target.closest("[data-edit],[data-step],[data-acc],[data-sreset],[data-gedit],[data-ghide],[data-gdel],[data-uncmp],[data-ptab],[data-fin]");if(!t)return;
   if(t.dataset.edit!=null){CSTEP=+t.dataset.edit;SHOWINTRO=false;DIR=1;CFGNOTE="";if(location.hash==="#configuration")renderConfig();else location.hash="configuration";}
