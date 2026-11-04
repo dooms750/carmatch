@@ -13,13 +13,15 @@ L'application tient compte de votre usage (kilométrage, longs trajets, recharge
 - **Animation de lancement** (compteur 0-100) et **écran d'accueil** avec profils types.
 - **Configuration guidée** en 6 étapes (trajets, conduite, priorités, véhicule, finances, voiture de fonction), une question à la fois, avec le meilleur match affiché en direct, puis un écran d'analyse avant les résultats.
 - **Ma voiture** : top 3 à regarder, motorisation conseillée, formule la plus avantageuse et coût mensuel réel. Ce coût inclut énergie, entretien, malus, prime, intérêts, et déduit la revente.
-- **Classement** filtrable de près de 70 modèles distribués en France (26 marques), avec 2 modèles maximum par marque en tête pour varier les propositions.
+- **Classement** filtrable de près de 70 modèles distribués en France (26 marques), avec 1 modèle par marque en tête par défaut pour varier les propositions.
 - **Marques favorites ou écartées** et réglage de la variété du classement.
+- **Fiabilité et réseau après-vente** : note par marque (TÜV 2026, ADAC 2026, Consumer Reports), prise en compte dans le score et modifiable.
 - **Financement** : achat, LLD et voiture de fonction côte à côte pour le modèle de votre choix.
 - **Comparateur** jusqu'à 3 véhicules, avec un radar et un tableau détaillé.
 - **Garage éditable** : ajouter, modifier ou exclure des véhicules, importer ou exporter en JSON.
 - **Réglages** : toutes les hypothèses fiscales et de coûts sont modifiables.
 - **Profils multiples** et préréglages types.
+- **Charte graphique** inspirée de la SATT Sud-Est (Advent Pro, Open Sans, bleu signature).
 - **Thème** clair ou sombre, six couleurs d'accent ; sur mobile, onglets en bas d'écran.
 - **IA intégrée** (« Décrivez votre besoin », « Avis de l'IA ») lorsque l'application est ouverte comme artifact dans Claude.
 

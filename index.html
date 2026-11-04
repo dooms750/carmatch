@@ -9,33 +9,36 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Advent+Pro:wght@500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: guided configuration first (stepper + one step at a time), results split into tabs; generous spacing, one idea per screen */
+/* Layout: guided configuration first, results in tabs. Palette and type follow the SATT Sud-Est identity: signature blue, deep blue, sun yellow and orange from the logo ring; Advent Pro titles, Open Sans text; crisp corners */
 :root{
-  --bg:#F1F3F5; --panel:#FFFFFF; --sunk:#F5F7F8; --ink:#101820; --muted:#5D6A73; --line:#DCE2E7; --line2:#E9EDF0;
-  --accent-l:#D4421D; --accent-d:#F26A40; --accent:var(--accent-l); --accent-soft:color-mix(in srgb,var(--accent) 10%,transparent); --on-accent:#FFFFFF;
-  --ok:#21754B; --ok-bg:#DDEFE4; --warn:#8F5C0E; --warn-bg:#F6EAD2;
-  --c2:#17798D; --c3:#6A52B5; --bev:#17798D; --phev:#6A52B5; --hev:#7A6B1C; --ice:#8C4230;
-  --shadow:0 1px 2px rgba(16,24,32,.04),0 4px 16px rgba(16,24,32,.05);
-  --display:"Archivo","Arial Narrow",Arial,sans-serif;
-  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-  --r:14px;
+  --bg:#F0F5F8; --panel:#FFFFFF; --sunk:#F4F8FA; --ink:#24323B; --muted:#63717A; --line:#D3E0E7; --line2:#E6EEF2;
+  --accent-l:#0098D1; --accent-d:#2DB4E8; --accent:var(--accent-l); --accent-soft:color-mix(in srgb,var(--accent) 10%,transparent); --on-accent:#FFFFFF;
+  --deep:#004C66; --sun:#FFD848; --orange:#F0A818;
+  --ok:#21754B; --ok-bg:#DDEFE4; --warn:#8F5C0E; --warn-bg:#F7EBD0;
+  --c2:#F0A818; --c3:#004C66; --bev:#0086B0; --phev:#6A52B5; --hev:#7A6B1C; --ice:#9A4A2E;
+  --shadow:0 1px 2px rgba(0,76,102,.05),0 4px 16px rgba(0,76,102,.06);
+  --display:"Advent Pro","Arial Narrow",Arial,sans-serif;
+  --body:"Open Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"Open Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --r:8px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0B1014; --panel:#131B21; --sunk:#0F161B; --ink:#E5ECF0; --muted:#8F9EA8; --line:#25323B; --line2:#1C272E;
-  --accent:var(--accent-d); --on-accent:#0B1014; --ok:#5AC08C; --ok-bg:#132A1F; --warn:#E2AA4C; --warn-bg:#2E230E;
-  --c2:#52BCD1; --c3:#A390EE; --bev:#52BCD1; --phev:#A390EE; --hev:#CDBB5B; --ice:#E58C74; --shadow:none; color-scheme:dark}}
+  --bg:#08161D; --panel:#0E2029; --sunk:#0B1B23; --ink:#E4EEF2; --muted:#8FA4AE; --line:#1F3743; --line2:#172C36;
+  --accent:var(--accent-d); --on-accent:#06141A; --deep:#5FB8D6; --sun:#FFD848; --orange:#F5B83A;
+  --ok:#5AC08C; --ok-bg:#132A1F; --warn:#E2AA4C; --warn-bg:#2E230E;
+  --c2:#F5B83A; --c3:#7FD0E0; --bev:#4FC1E6; --phev:#A390EE; --hev:#CDBB5B; --ice:#E58C74; --shadow:none; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0B1014; --panel:#131B21; --sunk:#0F161B; --ink:#E5ECF0; --muted:#8F9EA8; --line:#25323B; --line2:#1C272E;
-  --accent:var(--accent-d); --on-accent:#0B1014; --ok:#5AC08C; --ok-bg:#132A1F; --warn:#E2AA4C; --warn-bg:#2E230E;
-  --c2:#52BCD1; --c3:#A390EE; --bev:#52BCD1; --phev:#A390EE; --hev:#CDBB5B; --ice:#E58C74; --shadow:none; color-scheme:dark}
+  --bg:#08161D; --panel:#0E2029; --sunk:#0B1B23; --ink:#E4EEF2; --muted:#8FA4AE; --line:#1F3743; --line2:#172C36;
+  --accent:var(--accent-d); --on-accent:#06141A; --deep:#5FB8D6; --sun:#FFD848; --orange:#F5B83A;
+  --ok:#5AC08C; --ok-bg:#132A1F; --warn:#E2AA4C; --warn-bg:#2E230E;
+  --c2:#F5B83A; --c3:#7FD0E0; --bev:#4FC1E6; --phev:#A390EE; --hev:#CDBB5B; --ice:#E58C74; --shadow:none; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 64px}
 .wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
-h1,h2,h3{font-family:var(--display);font-stretch:110%;font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:.005em}
 h2{font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.15}
 h3{font-size:1.1rem}
 p{margin:0}
@@ -43,20 +46,20 @@ p{margin:0}
 button{font:inherit;color:inherit;cursor:pointer}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-family:var(--body);font-weight:600;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--deep)}
 .lead{color:var(--muted);max-width:62ch}
 .hint{font-size:.84rem;color:var(--muted)}
 
 /* Header */
 .appbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
-.brand h1{font-size:1.45rem;font-stretch:125%;font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.brand h1{font-size:1.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;line-height:1}
 .brand h1 span{color:var(--accent)}
 .tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .prof{display:flex;align-items:center;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 14px}
 .prof select{border:0;background:transparent;font:inherit;font-weight:600;font-size:.92rem;padding:5px 2px;color:var(--ink);max-width:180px}
 .save{font-size:.76rem;color:var(--muted)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:10px 18px;font-weight:600;font-size:.95rem;min-height:44px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:10px 18px;font-weight:600;font-size:.95rem;min-height:44px}
 .btn:hover{border-color:var(--accent)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.primary:hover{filter:brightness(1.05)}
@@ -96,7 +99,7 @@ nav.tabs a.locked{opacity:.45}
 .progress{display:flex;flex-direction:column;gap:8px}
 @media (min-width:900px){.progress{display:none}}
 .pbar{height:6px;background:var(--line2);border-radius:3px;overflow:hidden}
-.pbar i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,#FFD848,#F0A818 45%,var(--accent) 60%);border-radius:3px;transition:width .3s}
 .stephead{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
 .qs{display:flex;flex-direction:column;gap:28px}
 .q{display:flex;flex-direction:column;gap:10px}
@@ -109,7 +112,7 @@ input[type=number]{font-family:var(--mono)}
 textarea{resize:vertical;min-height:96px}
 input[type=range]{width:100%;accent-color:var(--accent);height:28px}
 .choices{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
-.choice{position:relative;display:flex;flex-direction:column;gap:3px;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--panel);cursor:pointer;min-height:64px;transition:border-color .15s,background .15s}
+.choice{position:relative;display:flex;flex-direction:column;gap:3px;padding:14px 16px;border:1.5px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer;min-height:64px;transition:border-color .15s,background .15s}
 .choice:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
 .choice input{position:absolute;opacity:0;pointer-events:none}
 .choice b{font-weight:600;font-size:.98rem}
@@ -156,7 +159,7 @@ details.adv[open] summary{margin-bottom:16px}
 .hero{display:grid;grid-template-columns:auto 1fr;gap:20px 28px;align-items:center}
 @media (max-width:640px){.hero{grid-template-columns:1fr;justify-items:start}}
 .ring{position:relative;width:160px;height:160px}
-.ring svg{width:160px;height:160px;transform:rotate(135deg)}
+.ring svg{width:160px;height:160px}
 .ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ring .val b{font-family:var(--display);font-stretch:100%;font-size:2.8rem;line-height:1}
 .ring .val span{font-size:.72rem;color:var(--muted)}
@@ -164,7 +167,7 @@ details.adv[open] summary{margin-bottom:16px}
 .facts{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:.9rem;margin-top:8px}
 .facts b{color:var(--ink);font-family:var(--mono);font-weight:600}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.tile{padding:18px 20px;border-radius:12px;background:var(--sunk);border:1px solid var(--line2);display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile{padding:18px 20px;border-radius:8px;border-top:3px solid var(--accent);background:var(--sunk);border:1px solid var(--line2);display:flex;flex-direction:column;gap:4px;min-width:0}
 .tile .k{font-size:.82rem;color:var(--muted)}
 .tile .v{font-family:var(--display);font-size:1.4rem;font-weight:700;line-height:1.15}
 .tile .s{font-size:.82rem;color:var(--muted)}
@@ -276,10 +279,10 @@ dialog::backdrop{background:rgba(5,10,14,.55)}
 footer.hyp{font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 footer.hyp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;max-width:100ch}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:.9rem;z-index:20}
-@media (prefers-reduced-motion:no-preference){.ring circle.arc{transition:stroke-dasharray .6s cubic-bezier(.2,.7,.2,1)}.view{animation:fade .25s ease}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+@media (prefers-reduced-motion:no-preference){.ring .arc{transition:stroke-dasharray .6s cubic-bezier(.2,.7,.2,1)}.view{animation:fade .25s ease}@keyframes fade{from{opacity:.4}to{opacity:1}}}
 
 .brandchips{display:flex;flex-wrap:wrap;gap:8px}
-.bchip{border:1.5px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 14px;font-weight:500;font-size:.88rem;min-height:38px}
+.bchip{border:1.5px solid var(--line);background:var(--panel);border-radius:6px;padding:7px 14px;font-weight:500;font-size:.88rem;min-height:38px}
 .bchip:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
 .bchip.fav{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
 .bchip.exc{color:var(--muted);text-decoration:line-through;background:var(--sunk);border-style:dashed}
@@ -292,14 +295,14 @@ footer.hyp ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:
 .sp-in{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center}
 .sp-gauge{width:min(190px,48vw);height:auto;overflow:visible}
 .sp-track{fill:none;stroke:var(--line);stroke-width:10;stroke-linecap:round;stroke-dasharray:377 503}
-.sp-arc{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;stroke-dasharray:272 503;animation:spArc 1.3s cubic-bezier(.55,0,.2,1) .1s both}
+.sp-arc{fill:none;stroke:url(#spg);stroke-width:10;stroke-linecap:round;stroke-dasharray:272 503;animation:spArc 1.3s cubic-bezier(.55,0,.2,1) .1s both}
 @keyframes spArc{0%{stroke-dasharray:0 503}65%{stroke-dasharray:356 503}100%{stroke-dasharray:272 503}}
 .sp-ticks line{stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;opacity:.55}
 .sp-needle{transform-box:view-box;transform-origin:100px 100px;transform:rotate(60deg);animation:spNeedle 1.3s cubic-bezier(.55,0,.2,1) .1s both}
 @keyframes spNeedle{0%{transform:rotate(-135deg)}65%{transform:rotate(120deg)}100%{transform:rotate(60deg)}}
 .sp-speed{font-family:var(--mono);font-size:.78rem;color:var(--muted);letter-spacing:.12em;margin-top:-58px;margin-bottom:26px}
 .sp-speed b{display:block;font-family:var(--display);font-stretch:100%;font-size:2rem;color:var(--ink);letter-spacing:0;line-height:1;font-variant-numeric:tabular-nums}
-.sp-word{font-family:var(--display);font-stretch:125%;font-weight:800;font-size:clamp(2.2rem,8vw,3.4rem);text-transform:uppercase;letter-spacing:.02em;line-height:1;animation:spUp .6s cubic-bezier(.2,.7,.2,1) .6s both}
+.sp-word{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,9vw,4rem);text-transform:uppercase;letter-spacing:.08em;line-height:1;animation:spUp .6s cubic-bezier(.2,.7,.2,1) .6s both}
 .sp-word span{color:var(--accent)}
 .sp-tag{color:var(--muted);animation:spUp .6s ease .85s both}
 @keyframes spUp{from{opacity:0;transform:translateY(14px)}}
@@ -373,9 +376,9 @@ nav.tabs .sh{display:none}
 <body>
 <div id="splash" aria-hidden="true">
   <div class="sp-in">
-    <svg class="sp-gauge" viewBox="0 0 200 200">
-      <circle class="sp-track" cx="100" cy="100" r="80" transform="rotate(135 100 100)"/>
-      <circle class="sp-arc" cx="100" cy="100" r="80" transform="rotate(135 100 100)"/>
+    <svg class="sp-gauge" viewBox="0 0 200 200"><defs><linearGradient id="spg" gradientUnits="userSpaceOnUse" x1="20" y1="0" x2="180" y2="0"><stop offset="0" stop-color="#FFD848"/><stop offset=".38" stop-color="#F0A818"/><stop offset=".5" stop-color="#F0A818"/><stop offset=".58" stop-color="#0098D1"/><stop offset="1" stop-color="#0098D1"/></linearGradient></defs>
+      <path class="sp-track" d="M43.4 156.6 A80 80 0 1 1 156.6 156.6"/>
+      <path class="sp-arc" d="M43.4 156.6 A80 80 0 1 1 156.6 156.6"/>
       <g class="sp-ticks"><line x1="61.8" y1="138.2" x2="50.5" y2="149.5"/><line x1="42.9" y1="118.5" x2="33.4" y2="121.6"/><line x1="40.7" y1="90.6" x2="30.9" y2="89.0"/><line x1="51.5" y1="64.7" x2="43.4" y2="58.9"/><line x1="72.8" y1="46.5" x2="68.2" y2="37.6"/><line x1="100.0" y1="46.0" x2="100.0" y2="30.0"/><line x1="127.2" y1="46.5" x2="131.8" y2="37.6"/><line x1="148.5" y1="64.7" x2="156.6" y2="58.9"/><line x1="159.3" y1="90.6" x2="169.1" y2="89.0"/><line x1="157.1" y1="118.5" x2="166.6" y2="121.6"/><line x1="138.2" y1="138.2" x2="149.5" y2="149.5"/></g>
       <g class="sp-needle"><line x1="100" y1="108" x2="100" y2="36" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/></g>
       <circle cx="100" cy="100" r="8" fill="var(--ink)"/><circle cx="100" cy="100" r="3" fill="var(--accent)"/>
@@ -390,7 +393,7 @@ nav.tabs .sh{display:none}
 <div class="wrap">
   <header class="appbar">
     <a class="brand" href="#configuration" aria-label="CarMatch, retour à la configuration">
-      <svg width="36" height="36" viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="16" fill="none" stroke="var(--line)" stroke-width="4"/><path d="M7.7 30.3A16 16 0 1 1 30.3 30.3" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="60 100"/><path d="M19 19 L28 11" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/><circle cx="19" cy="19" r="2.6" fill="var(--ink)"/></svg>
+      <svg width="36" height="36" viewBox="0 0 38 38" aria-hidden="true"><defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="3" y1="0" x2="35" y2="0"><stop offset="0" stop-color="#FFD848"/><stop offset=".38" stop-color="#F0A818"/><stop offset=".5" stop-color="#F0A818"/><stop offset=".58" stop-color="#0098D1"/><stop offset="1" stop-color="#0098D1"/></linearGradient></defs><circle cx="19" cy="19" r="16" fill="none" stroke="var(--line)" stroke-width="4"/><path d="M7.7 30.3A16 16 0 1 1 30.3 30.3" fill="none" stroke="url(#hg)" stroke-width="4" stroke-linecap="round" stroke-dasharray="60 100"/><path d="M19 19 L28 11" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/><circle cx="19" cy="19" r="2.6" fill="var(--ink)"/></svg>
       <h1>Car<span>Match</span></h1>
     </a>
     <div class="tools">
@@ -419,7 +422,7 @@ nav.tabs .sh{display:none}
 
   <footer class="hyp">
     <p>Prime CEE, malus, avantage en nature et coûts d'usage : valeurs 2026 modifiables dans Paramètres. Fiches véhicules indicatives, à vérifier en concession. Assurance, carte grise et frais de restitution LLD non inclus. Simulateur de comparaison, pas un conseil financier ou fiscal personnalisé.</p>
-    <p>Sources : <a href="https://www.go-electra.com/fr/newsroom/cee-bonus-for-electric-cars-in-2026/" target="_blank" rel="noopener">prime CEE 2026</a> · <a href="https://leocare.eu/fr/blog/annulation-malus-ecologique-2028/" target="_blank" rel="noopener">malus CO2</a> · <a href="https://www.beev.co/blog/fiscalite/fiscalite-des-flottes-automobiles-en-2026-le-guide-complet/" target="_blank" rel="noopener">malus au poids</a> · <a href="https://calcforlife.com/fr/calcul-avantage-nature-voiture/" target="_blank" rel="noopener">avantage en nature</a></p>
+    <p>Sources : <a href="https://www.go-electra.com/fr/newsroom/cee-bonus-for-electric-cars-in-2026/" target="_blank" rel="noopener">prime CEE 2026</a> · <a href="https://leocare.eu/fr/blog/annulation-malus-ecologique-2028/" target="_blank" rel="noopener">malus CO2</a> · <a href="https://www.beev.co/blog/fiscalite/fiscalite-des-flottes-automobiles-en-2026-le-guide-complet/" target="_blank" rel="noopener">malus au poids</a> · <a href="https://calcforlife.com/fr/calcul-avantage-nature-voiture/" target="_blank" rel="noopener">avantage en nature</a> · fiabilité : <a href="https://rouleur-electrique.fr/le-tesla-model-y-classe-pire-voiture-en-fiabilite-par-le-rapport-allemand-tuv/" target="_blank" rel="noopener">TÜV 2026</a>, <a href="https://motorsactu.com/classement-fiabilite-marques-europeennes-2026/" target="_blank" rel="noopener">ADAC 2026</a>, <a href="https://www.motor1.com/news/781991/most-reliable-car-brands-2026/" target="_blank" rel="noopener">Consumer Reports</a></p>
   </footer>
 </div>
 
@@ -479,37 +482,38 @@ const V0 = [
  {n:"Cupra Formentor VZ 333",e:"ICE",body:"cross",made:"Espagne (Martorell)",ep:1,eb:1,price:58000,hp:333,acc:4.9,trunk:420,fuel:8.4,co2:190,mass:1660,tech:4},
  {n:"Volkswagen Tiguan R-Line 265 4Motion",e:"ICE",body:"suv",made:"Allemagne (Wolfsburg)",ep:1,eb:1,price:58000,hp:265,acc:5.9,trunk:652,fuel:8.2,co2:185,mass:1750,tech:4},
  {n:"Skoda Kodiaq RS 265",e:"ICE",body:"suv",made:"Tchéquie (Kvasiny)",ep:1,eb:1,price:58000,hp:265,acc:6.4,trunk:845,fuel:8.0,co2:180,mass:1800,tech:4},
- {n:"Volkswagen ID.5 GTX",e:"BEV",body:"coupe",made:"Allemagne (Zwickau)",ep:1,eb:1,price:59000,hp:340,acc:5.4,trunk:549,range:560,kwh:17.5,mass:2230,eco:1,tech:3,dc:185},
- {n:"Ford Explorer Extended Range AWD",e:"BEV",body:"suv",made:"Allemagne (Cologne)",ep:1,eb:0,price:55000,hp:340,acc:5.3,trunk:470,range:566,kwh:18.0,mass:2170,eco:1,tech:4,dc:185},
- {n:"Citroën ë-C5 Aircross Grande Autonomie",e:"BEV",body:"suv",made:"France (Rennes)",ep:1,eb:1,price:43000,hp:230,acc:8.9,trunk:565,range:520,kwh:16.5,mass:2000,eco:1,tech:3,dc:160},
- {n:"Mercedes GLC 400 4MATIC électrique",e:"BEV",body:"suv",made:"Allemagne (Brême)",ep:1,eb:1,price:76000,hp:489,acc:4.3,trunk:570,range:713,kwh:15.8,mass:2400,eco:1,tech:5,dc:330},
- {n:"Audi A6 Avant e-tron quattro",e:"BEV",body:"break",made:"Allemagne (Ingolstadt)",ep:1,eb:1,price:82000,hp:428,acc:5.4,trunk:502,range:700,kwh:16.0,mass:2300,eco:1,tech:5,dc:270},
- {n:"BMW i5 Touring eDrive40",e:"BEV",body:"break",made:"Allemagne (Dingolfing)",ep:1,eb:1,price:78000,hp:340,acc:6.1,trunk:570,range:560,kwh:17.5,mass:2250,eco:1,tech:5,dc:205},
- {n:"Porsche Macan 4 électrique",e:"BEV",body:"suv",made:"Allemagne (Leipzig)",ep:1,eb:1,price:92000,hp:408,acc:5.2,trunk:540,range:613,kwh:19.0,mass:2330,eco:1,tech:5,dc:270},
- {n:"Hyundai Ioniq 5 84 kWh AWD",e:"BEV",body:"cross",made:"Corée du Sud",ep:0,eb:0,price:58000,hp:325,acc:5.3,trunk:520,range:460,kwh:19.5,mass:2210,eco:0,tech:5,dc:230},
- {n:"Nissan Ariya e-4ORCE 87 kWh",e:"BEV",body:"suv",made:"Japon",ep:0,eb:0,price:60000,hp:306,acc:5.7,trunk:415,range:500,kwh:20.0,mass:2300,eco:0,tech:4,dc:130},
- {n:"Toyota bZ4X AWD",e:"BEV",body:"suv",made:"Japon",ep:0,eb:0,price:52000,hp:343,acc:5.1,trunk:452,range:500,kwh:17.5,mass:2100,eco:0,tech:4,dc:150},
- {n:"Ford Mustang Mach-E GT",e:"BEV",body:"cross",made:"Mexique",ep:0,eb:0,price:75000,hp:487,acc:3.7,trunk:402,range:490,kwh:20.0,mass:2270,eco:0,tech:4,dc:150},
- {n:"Smart #3 Brabus",e:"BEV",body:"cross",made:"Chine",ep:0,eb:1,price:50000,hp:428,acc:3.7,trunk:370,range:415,kwh:17.5,mass:1910,eco:0,tech:5,dc:150},
- {n:"Leapmotor C10 Grande Autonomie",e:"BEV",body:"suv",made:"Chine",ep:0,eb:0,price:36400,hp:218,acc:7.5,trunk:435,range:420,kwh:18.0,mass:1990,eco:0,tech:4,dc:84},
+ {n:"Volkswagen ID.5 GTX",e:"BEV",body:"coupe",made:"Allemagne (Zwickau)",ep:1,eb:1,price:60400,hp:340,acc:5.4,trunk:549,range:540,kwh:16.4,mass:2230,eco:1,tech:3,dc:185},
+ {n:"Ford Explorer Extended Range AWD",e:"BEV",body:"suv",made:"Allemagne (Cologne)",ep:1,eb:0,price:49900,hp:340,acc:5.3,trunk:532,range:553,kwh:16.3,mass:2170,eco:1,tech:4,dc:175},
+ {n:"Citroën ë-C5 Aircross Grande Autonomie",e:"BEV",body:"suv",made:"France (Rennes)",ep:1,eb:1,price:46990,hp:231,acc:8.8,trunk:651,range:680,kwh:17.8,mass:2246,eco:1,tech:3,dc:160},
+ {n:"Mercedes GLC 400 4MATIC électrique",e:"BEV",body:"suv",made:"Allemagne (Brême)",ep:1,eb:1,price:71900,hp:489,acc:4.3,trunk:570,range:713,kwh:14.9,mass:2400,eco:1,tech:5,dc:330},
+ {n:"Audi A6 Avant e-tron quattro",e:"BEV",body:"break",made:"Allemagne (Ingolstadt)",ep:1,eb:1,price:85000,hp:462,acc:4.5,trunk:502,range:685,kwh:15.5,mass:2370,eco:1,tech:5,dc:270},
+ {n:"BMW i5 Touring eDrive40",e:"BEV",body:"break",made:"Allemagne (Dingolfing)",ep:1,eb:1,price:77750,hp:340,acc:6.1,trunk:570,range:602,kwh:15.4,mass:2250,eco:1,tech:5,dc:206},
+ {n:"Porsche Macan 4 électrique",e:"BEV",body:"suv",made:"Allemagne (Leipzig)",ep:1,eb:1,price:87800,hp:408,acc:5.2,trunk:540,range:611,kwh:17.8,mass:2405,eco:1,tech:5,dc:270},
+ {n:"Hyundai Ioniq 5 84 kWh AWD",e:"BEV",body:"cross",made:"Corée du Sud",ep:0,eb:0,price:58000,hp:325,acc:5.3,trunk:527,range:520,kwh:17.5,mass:2090,eco:0,tech:5,dc:240},
+ {n:"Nissan Ariya e-4ORCE 87 kWh",e:"BEV",body:"suv",made:"Japon",ep:0,eb:0,price:55800,hp:306,acc:5.7,trunk:415,range:507,kwh:20.0,mass:2259,eco:0,tech:4,dc:130},
+ {n:"Toyota bZ4X AWD",e:"BEV",body:"suv",made:"Japon",ep:0,eb:0,price:49900,hp:343,acc:5.1,trunk:452,range:506,kwh:14.5,mass:2075,eco:0,tech:4,dc:150},
+ {n:"Ford Mustang Mach-E GT",e:"BEV",body:"cross",made:"Mexique",ep:0,eb:0,price:77490,hp:487,acc:3.8,trunk:519,range:515,kwh:21.0,mass:2343,eco:0,tech:4,dc:150},
+ {n:"Smart #3 Brabus",e:"BEV",body:"cross",made:"Chine",ep:0,eb:1,price:52300,hp:428,acc:3.7,trunk:370,range:415,kwh:17.5,mass:1985,eco:0,tech:5,dc:150},
+ {n:"Leapmotor C10 Grande Autonomie",e:"BEV",body:"suv",made:"Pologne (Tychy)",ep:1,eb:0,price:36900,hp:231,acc:7.3,trunk:435,range:420,kwh:18.0,mass:1990,eco:0,tech:4,dc:84},
  {n:"Audi Q5 TFSI e quattro 367",e:"PHEV",body:"suv",made:"Mexique (San José Chiapa)",ep:0,eb:1,price:72000,hp:367,acc:5.2,trunk:403,ev:100,fuel:7.5,co2:20,mass:2200,tech:5},
- {n:"Mazda CX-60 e-Skyactiv PHEV",e:"PHEV",body:"suv",made:"Japon",ep:0,eb:0,price:52000,hp:327,acc:5.8,trunk:570,ev:63,fuel:7.5,co2:33,mass:2050,tech:4},
- {n:"Lynk & Co 08 PHEV",e:"PHEV",body:"suv",made:"Chine",ep:0,eb:0,price:55000,hp:351,acc:6.8,trunk:535,ev:200,fuel:6.5,co2:17,mass:2240,tech:5},
- {n:"Hyundai Tucson Hybrid 4WD",e:"HEV",body:"suv",made:"Tchéquie (Nošovice)",ep:1,eb:0,price:44000,hp:239,acc:8.3,trunk:616,fuel:5.9,co2:134,mass:1690,tech:4},
+ {n:"Mazda CX-60 e-Skyactiv PHEV",e:"PHEV",body:"suv",made:"Japon",ep:0,eb:0,price:57450,hp:327,acc:5.8,trunk:570,ev:63,fuel:7.5,co2:33,mass:2056,tech:4},
+ {n:"Lynk & Co 08 PHEV",e:"PHEV",body:"suv",made:"Chine",ep:0,eb:0,price:53995,hp:351,acc:6.8,trunk:535,ev:200,fuel:6.5,co2:17,mass:2240,tech:5},
+ {n:"Hyundai Tucson Hybrid 4WD",e:"HEV",body:"suv",made:"Tchéquie (Nošovice)",ep:1,eb:0,price:45000,hp:239,acc:8.3,trunk:616,fuel:5.9,co2:134,mass:1690,tech:4},
  {n:"Toyota C-HR Hybrid 200",e:"HEV",body:"cross",made:"Turquie (Sakarya)",ep:0,eb:0,price:42000,hp:197,acc:8.1,trunk:364,fuel:4.8,co2:108,mass:1500,tech:4},
 ].map(v=>({...v,id:v.n.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}));
 
 
-const brandOf=v=>(v.b||(v.n||"").split(" ")[0]||"").replace(/^MG\d.*/,"MG");
+const brandOf=v=>v.b||(/^Lynk & Co/.test(v.n||"")?"Lynk & Co":((v.n||"").split(" ")[0]||"").replace(/^MG\d.*/,"MG"));
+const brandInfo=b=>(S().brands&&S().brands[b])||{fia:3,res:3};
 const EN={BEV:"Électrique",PHEV:"Hybride rechargeable",HEV:"Hybride",ICE:"Essence"};
 const BODY={suv:"SUV",coupe:"SUV coupé",cross:"Crossover",berline:"Berline",break:"Break",compacte:"Compacte"};
 const MN={buy:"Achat à crédit",lld:"LLD",fon:"Voiture de fonction"};
-const ACCENTS={rouge:["#D4421D","#F26A40","Rouge circuit"],bleu:["#2D5BE3","#6E95FF","Bleu électrique"],jade:["#0F8A64","#3FCB97","Vert jade"],ambre:["#B86E00","#F0A93A","Ambre"],violet:["#6D45E0","#A88CFF","Violet"],graphite:["#3A4752","#B7C3CC","Graphite"]};
+const ACCENTS={satt:["#0098D1","#2DB4E8","Bleu signature"],profond:["#004C66","#5FB8D6","Bleu profond"],soleil:["#B87A00","#FFD848","Jaune soleil"],orange:["#C77A00","#F5B83A","Orange"],jade:["#0F8A64","#3FCB97","Vert jade"],graphite:["#3A4752","#B7C3CC","Graphite"]};
 const DEF_P={km:15000,trips:4,tripKm:450,home:"maison",family:40,style:"sport",
-  w:{sport:5,coffre:4,budget:2,tech:2,sob:2,long:2,shape:2},
+  w:{sport:5,coffre:4,budget:2,tech:2,sob:2,long:2,shape:2,fiab:4},
   minTrunk:470,maxPrice:75000,shape:"all",origin:"all",en:{BEV:true,PHEV:true,HEV:true,ICE:true},
   rfr:"sup",tmi:0.30,horizon:4,apport:10000,rate:4.5,rateLld:5.9,
-  fonction:"peutetre",startYear:2027,particip:0,fuelPaid:true,favB:[],excB:[],div:"2"};
+  fonction:"peutetre",startYear:2027,particip:0,fuelPaid:true,favB:[],excB:[],div:"1"};
 const PRESETS={"Mon profil":{},
   "Famille 2 enfants":{km:18000,family:80,style:"normal",w:{sport:0,coffre:5,budget:5,tech:2,sob:4,long:4,shape:4},minTrunk:550,maxPrice:55000,rfr:"inter",tmi:0.11},
   "Gros rouleur":{km:35000,trips:20,tripKm:500,style:"normal",w:{sport:2,coffre:2,budget:4,tech:2,sob:5,long:5,shape:0},minTrunk:450},
@@ -518,7 +522,8 @@ const DEF_S={cee:{modeste:5700,inter:4700,sup:3500},sur:{modeste:2000,inter:1600
   malusSeuil:108,malusPlafond:80000,poidsSeuil:1500,poidsT:[10,15,20,25,30],abBEV:600,abPHEV:100,
   aenTaux:15,aenAb:70,aenPlaf:4641.6,aenFin:2027,cotis:22,
   maint:{BEV:350,PHEV:650,HEV:550,ICE:700},rv4:{BEV:42,PHEV:45,HEV:55,ICE:48},remiseLld:6,
-  prix:{elec:0.21,fast:0.55,pub:0.40,travail:0.15,fuel:1.78}};
+  prix:{elec:0.21,fast:0.55,pub:0.40,travail:0.15,fuel:1.78},
+  brands:{"Toyota":{fia:5,res:4},"Mazda":{fia:4.5,res:2.5},"Kia":{fia:4.5,res:3.5},"Hyundai":{fia:4,res:3.5},"Porsche":{fia:4,res:2},"Volvo":{fia:4,res:3},"Nissan":{fia:3.5,res:3.5},"Audi":{fia:3.5,res:3.5},"BMW":{fia:3.5,res:3.5},"Skoda":{fia:3.5,res:3.5},"Mercedes":{fia:3,res:3.5},"Ford":{fia:3,res:4},"Renault":{fia:2.5,res:5},"Peugeot":{fia:2.5,res:5},"Citroën":{fia:2.5,res:5},"Alpine":{fia:2.5,res:3},"Cupra":{fia:2.5,res:3.5},"Volkswagen":{fia:2.5,res:4},"Tesla":{fia:2.5,res:2},"MG":{fia:3,res:3},"BYD":{fia:3,res:2.5},"Xpeng":{fia:3,res:1.5},"Leapmotor":{fia:3,res:3},"Lynk & Co":{fia:3,res:1.5},"Polestar":{fia:3,res:1.5},"Smart":{fia:3,res:2.5}}};
 
 const clone=o=>JSON.parse(JSON.stringify(o));
 function deepMerge(base,over){const o=clone(base);for(const k in over){if(over[k]&&typeof over[k]==="object"&&!Array.isArray(over[k])&&o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k]))o[k]=deepMerge(o[k],over[k]);else if(k in o)o[k]=over[k];}return o;}
@@ -532,7 +537,7 @@ const c01=x=>Math.max(0,Math.min(1,x));
 const $=id=>document.getElementById(id);
 
 /* ---------- État ---------- */
-let st={profiles:{"Mon profil":clone(DEF_P)},active:"Mon profil",S:clone(DEF_S),garage:{over:{},hidden:[],custom:[]},ui:{theme:"auto",accent:"rouge",done:{}},compare:[]};
+let st={profiles:{"Mon profil":clone(DEF_P)},active:"Mon profil",S:clone(DEF_S),garage:{over:{},hidden:[],custom:[]},ui:{theme:"auto",accent:"satt",done:{},cv:3},compare:[]};
 function normalize(raw){
   const s=clone(st);if(!raw||typeof raw!=="object")return s;
   if(raw.profiles&&typeof raw.profiles==="object"){s.profiles={};for(const k in raw.profiles)s.profiles[k]=deepMerge(DEF_P,raw.profiles[k]||{});}
@@ -540,7 +545,8 @@ function normalize(raw){
   s.active=raw.active in s.profiles?raw.active:Object.keys(s.profiles)[0];
   if(raw.S)s.S=deepMerge(DEF_S,raw.S);
   if(raw.garage)s.garage={over:raw.garage.over||{},hidden:Array.isArray(raw.garage.hidden)?raw.garage.hidden:[],custom:Array.isArray(raw.garage.custom)?raw.garage.custom:[]};
-  if(raw.ui)s.ui={theme:raw.ui.theme||"auto",accent:ACCENTS[raw.ui.accent]?raw.ui.accent:"rouge",done:(raw.ui.done&&typeof raw.ui.done==="object")?raw.ui.done:{}};
+  if(raw.ui)s.ui={theme:raw.ui.theme||"auto",accent:(raw.ui.cv>=2&&ACCENTS[raw.ui.accent])?raw.ui.accent:"satt",done:(raw.ui.done&&typeof raw.ui.done==="object")?raw.ui.done:{},cv:3};
+  if(!raw.ui||!(raw.ui.cv>=3)){for(const k in s.profiles)s.profiles[k].div="1";}
   if(Array.isArray(raw.compare))s.compare=raw.compare.slice(0,3);
   return s;
 }
@@ -604,7 +610,8 @@ function evaluate(p){
   for(const x of ok){const v=x.v,w=p.w;
     const s={sport:c01((10-v.acc)/6.5),coffre:c01((v.trunk-300)/400),budget:c01(1-(priv(x)-minM)/(minM*1.5)),tech:(v.tech||3)/5,
       sob:c01((0.15-x.c.en/p.km)/0.12),long:v.e==="BEV"?c01(1-x.t.stops*0.22-(p.home==="non"?0.3:0)):1,
-      shape:({suv:1,coupe:0.9,cross:0.6,break:0.35,berline:0.15,compacte:0.15})[v.body]??0.5};
+      shape:({suv:1,coupe:0.9,cross:0.6,break:0.35,berline:0.15,compacte:0.15})[v.body]??0.5,
+      fiab:(()=>{const bi=brandInfo(brandOf(v));return c01(0.6*(bi.fia-1)/4+0.4*(bi.res-1)/4);})()};
     let sw=0,sum=0;for(const k in w){sum+=w[k]*s[k];sw+=w[k];}
     let sc=sw?sum/sw:0.5;
     if(p.home==="non"&&v.e==="BEV")sc*=0.85;if(p.home==="non"&&v.e==="PHEV")sc*=0.8;
@@ -631,14 +638,15 @@ const STEPS=[
  {t:"Votre conduite",d:"Avec qui et comment vous roulez.",sum:p=>`${p.family} % en famille · ${({eco:"éco",normal:"normal",sport:"sportif"})[p.style]}`,q:[
   {p:"family",l:"Part des trajets en famille",k:"range",min:0,max:100,step:5,u:v=>v+" %"},
   {p:"style",l:"Votre style de conduite",k:"cards",o:[["eco","Éco","Conduite souple, anticipation"],["normal","Normal","Un peu de tout"],["sport","Sportif","Vous aimez accélérer"]]}]},
- {t:"Vos priorités",d:"Ce qui compte le plus pour vous. Le classement en dépend directement.",sum:p=>{const n={sport:"0-100",coffre:"coffre",budget:"coût",tech:"techno",sob:"sobriété",long:"longs trajets",shape:"SUV"};return Object.entries(p.w).filter(([,v])=>v>=5).map(([k])=>n[k]).join(", ")||"Équilibré";},q:[
+ {t:"Vos priorités",d:"Ce qui compte le plus pour vous. Le classement en dépend directement.",sum:p=>{const n={sport:"0-100",coffre:"coffre",budget:"coût",tech:"techno",sob:"sobriété",long:"longs trajets",shape:"SUV",fiab:"fiabilité"};return Object.entries(p.w).filter(([,v])=>v>=5).map(([k])=>n[k]).join(", ")||"Équilibré";},q:[
   {p:"w.sport",l:"Accélération 0-100",d:"Les reprises et le plaisir",k:"level"},
   {p:"w.coffre",l:"Coffre et habitabilité",d:"Bagages, poussette, sport",k:"level"},
   {p:"w.budget",l:"Coût total",d:"Ce que la voiture vous coûte vraiment",k:"level"},
   {p:"w.tech",l:"Technologies",d:"Écran, aides, logiciel",k:"level"},
   {p:"w.sob",l:"Sobriété",d:"Consommation et énergie",k:"level"},
   {p:"w.long",l:"Aisance sur longs trajets",d:"Autonomie, recharge rapide",k:"level"},
-  {p:"w.shape",l:"Format SUV",d:"Position haute, look baroudeur",k:"level"}]},
+  {p:"w.shape",l:"Format SUV",d:"Position haute, look baroudeur",k:"level"},
+  {p:"w.fiab",l:"Fiabilité et réseau",d:"Pannes constatées, garages proches",k:"level"}]},
  {t:"Le véhicule",d:"Vos critères de taille, de budget et de motorisation.",sum:p=>`${p.minTrunk} L mini · ${fmt(p.maxPrice)} € max${(p.favB||[]).length?` · ♥ ${p.favB.length}`:""}${(p.excB||[]).length?` · ✕ ${p.excB.length}`:""}`,q:[
   {p:"en",l:"Motorisations envisagées",k:"multi",o:[["BEV","Électrique","Zéro malus, recharge"],["PHEV","Hybride rechargeable","Électrique au quotidien"],["HEV","Hybride","Sans prise"],["ICE","Essence","Thermique classique"]]},
   {k:"row",q:[{p:"minTrunk",l:"Coffre minimum (L)",k:"num",min:200,max:900,step:10},{p:"maxPrice",l:"Prix maximum TTC (€)",k:"num",min:15000,max:200000,step:1000}]},
@@ -745,7 +753,7 @@ function analyzeThen(cb){
 function countUps(root){
   const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;if(reduce)return;
   const delay=document.getElementById("splash")?1900:120;
-  const arcs=[...root.querySelectorAll("circle.arc")],nums=[...root.querySelectorAll("[data-count]")];
+  const arcs=[...root.querySelectorAll(".arc")],nums=[...root.querySelectorAll("[data-count]")];
   arcs.forEach(c=>{c.dataset.full=c.getAttribute("stroke-dasharray");c.style.strokeDasharray="0 999";});
   nums.forEach(el=>{el.textContent=el.dataset.fmt==="eur"?eur(0):"0";});
   setTimeout(()=>{
@@ -786,9 +794,9 @@ function renderMatch(){
   V.innerHTML=`
   <div class="panel pad stack" style="gap:24px">
     <div class="hero">
-      <div class="ring" role="img" aria-label="Adéquation ${top.score} sur 100"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="66" fill="none" stroke="var(--line2)" stroke-width="12" stroke-dasharray="${arc} ${C}" stroke-linecap="round"/><circle class="arc" cx="80" cy="80" r="66" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="${fill} ${C}" stroke-linecap="round"/></svg><div class="val"><b data-count="${top.score}">${top.score}</b><span>sur 100</span></div></div>
+      <div class="ring" role="img" aria-label="Adéquation ${top.score} sur 100"><svg viewBox="0 0 160 160"><path d="M33.33 126.67 A66 66 0 1 1 126.67 126.67" fill="none" stroke="var(--line2)" stroke-width="12" stroke-dasharray="${arc} ${C}" stroke-linecap="round"/><defs><linearGradient id="rg" gradientUnits="userSpaceOnUse" x1="14" y1="0" x2="146" y2="0"><stop offset="0" stop-color="#FFD848"/><stop offset=".38" stop-color="#F0A818"/><stop offset=".5" stop-color="#F0A818"/><stop offset=".58" stop-color="#0098D1"/><stop offset="1" stop-color="#0098D1"/></linearGradient></defs><path class="arc" d="M33.33 126.67 A66 66 0 1 1 126.67 126.67" fill="none" stroke="url(#rg)" stroke-width="12" stroke-dasharray="${fill} ${C}" stroke-linecap="round"/></svg><div class="val"><b data-count="${top.score}">${top.score}</b><span>sur 100</span></div></div>
       <div><span class="eyebrow">Votre meilleur match</span><h2 style="font-size:clamp(1.6rem,3.4vw,2.4rem)"><em>${esc(top.v.n)}</em></h2>
-        <div class="facts"><span><b>${dec(top.v.acc)} s</b> 0-100</span><span><b>${top.v.trunk} L</b> coffre</span><span><b>${fmt(top.v.price)} €</b> TTC</span><span>${BODY[top.v.body]} · ${esc(top.v.made)}</span></div></div>
+        <div class="facts"><span><b>${dec(top.v.acc)} s</b> 0-100</span><span><b>${top.v.trunk} L</b> coffre</span><span><b>${fmt(top.v.price)} €</b> TTC</span><span>${BODY[top.v.body]} · ${esc(top.v.made)}</span><span>Fiabilité <b>${dec(brandInfo(brandOf(top.v)).fia)}/5</b> · réseau <b>${dec(brandInfo(brandOf(top.v)).res)}/5</b></span></div></div>
     </div>
     <div class="stack" style="gap:8px"><span class="eyebrow">Votre profil · touchez pour modifier</span>
       <div class="chips">${STEPS.map((s,i)=>`<button class="chip" type="button" data-edit="${i}"><span>${s.t}</span><b>${esc(s.sum(p))}</b></button>`).join("")}</div></div>
@@ -833,6 +841,7 @@ function rowHTML(x,i,p,showF){
   if(v.trunk<p.minTrunk)n.push(`<span class="note bad">Coffre un peu juste</span>`);
   if(v.price>p.maxPrice)n.push(`<span class="note bad">Au-dessus du budget</span>`);
   if(v.e==="PHEV"&&p.home==="non")n.push(`<span class="note bad">Peu utile sans recharge</span>`);
+  {const bi=brandInfo(brandOf(v));if(bi.fia<=2.5)n.push(`<span class="note bad">Fiabilité en retrait (${dec(bi.fia)}/5)</span>`);else if(bi.fia>=4.5)n.push(`<span class="note good">Très fiable (${dec(bi.fia)}/5)</span>`);if(bi.res<=2)n.push(`<span class="note bad">Réseau après-vente restreint</span>`);}
   const auto=v.e==="BEV"?`${v.range} km`:v.e==="PHEV"?`${v.ev} km élec.`:`${dec(v.fuel)} L/100`;
   const cell=(k)=>`<div class="${x.best===k?"best":""}"><div class="k">${({buy:"Achat",lld:"LLD",fon:"Fonction"})[k]}</div><div class="v">${k==="fon"&&!showF?"—":eur(c[k].month)+"/mois"}</div></div>`;
   return `<details class="vrow">
@@ -848,6 +857,7 @@ function rowHTML(x,i,p,showF){
         <div class="spec"><div class="k">${v.e==="BEV"?"Autonomie":v.e==="PHEV"?"Autonomie élec.":"Conso."}</div><div class="v">${auto}</div></div>
         <div class="spec"><div class="k">Énergie / an</div><div class="v">${eur(c.en)}</div></div>
         <div class="spec"><div class="k">Prix TTC</div><div class="v">${fmt(v.price)} €</div></div>
+        <div class="spec"><div class="k">Fiabilité / réseau</div><div class="v">${dec(brandInfo(brandOf(v)).fia)} / ${dec(brandInfo(brandOf(v)).res)}</div></div>
       </div>
       <p class="hint">${esc(v.made)} · ${fmt(v.mass)} kg${v.e==="BEV"&&x.t?` · ${x.t.stops===0?"long trajet sans recharge":`${x.t.stops} arrêt${x.t.stops>1?"s":""} de ${x.t.min} min par long trajet`}`:""}</p>
       <div class="three">${cell("buy")}${cell("lld")}${cell("fon")}</div>
@@ -894,14 +904,14 @@ function renderCompare(){
   let sel=st.compare.map(id=>list.find(x=>x.v.id===id)||(()=>{const v=all.find(z=>z.id===id);return v?{v,c:costs(v,p),t:trip(v,p),s:null,score:null}:null;})()).filter(Boolean);
   const auto=!sel.length;if(auto)sel=list.slice(0,3);
   if(!sel.length){V.innerHTML=noResult({});return;}
-  const COLS=["var(--accent)","var(--c2)","var(--c3)"],AX=[["sport","Accélération"],["coffre","Coffre"],["budget","Coût"],["tech","Techno"],["sob","Sobriété"],["long","Longs trajets"]];
+  const COLS=["var(--accent)","var(--c2)","var(--c3)"],AX=[["sport","Accélération"],["coffre","Coffre"],["budget","Coût"],["tech","Techno"],["sob","Sobriété"],["long","Longs trajets"],["fiab","Fiabilité"]];
   const cx=200,cy=175,R=120,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/AX.length;return[cx+Math.cos(a)*r,cy+Math.sin(a)*r];};
   const grid=[0.25,0.5,0.75,1].map(k=>`<polygon points="${AX.map((_,i)=>pt(i,R*k).join(",")).join(" ")}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join("");
   const axes=AX.map((a,i)=>{const [x,y]=pt(i,R),[lx,ly]=pt(i,R+24);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle">${a[1]}</text>`;}).join("");
   const polys=sel.map((x,j)=>x.s?`<polygon points="${AX.map((a,i)=>pt(i,R*Math.max(0.04,x.s[a[0]])).join(",")).join(" ")}" fill="${COLS[j]}" fill-opacity=".14" stroke="${COLS[j]}" stroke-width="2.5"/>`:"").join("");
   const rows=[["Score",x=>x.score??"—",1],["Prix TTC",x=>x.v.price,-1,eur],["0-100 km/h",x=>x.v.acc,-1,v=>dec(v)+" s"],["Puissance",x=>x.v.hp,1,v=>v+" ch"],
     ["Coffre",x=>x.v.trunk,1,v=>v+" L"],["Autonomie",x=>x.v.e==="BEV"?x.v.range:x.v.e==="PHEV"?x.v.ev:null,1,v=>v==null?"—":v+" km"],
-    ["Malus",x=>x.c.mal,-1,eur],["Prime CEE",x=>x.c.prime,1,eur],["Énergie / an",x=>x.c.en,-1,eur],
+    ["Fiabilité (sur 5)",x=>brandInfo(brandOf(x.v)).fia,1,dec],["Réseau (sur 5)",x=>brandInfo(brandOf(x.v)).res,1,dec],["Malus",x=>x.c.mal,-1,eur],["Prime CEE",x=>x.c.prime,1,eur],["Énergie / an",x=>x.c.en,-1,eur],
     ["Achat / mois",x=>x.c.buy.month,-1,eur],["LLD / mois",x=>x.c.lld.month,-1,eur],["Fonction / mois",x=>x.c.fon.month,-1,eur],["Fabrication",x=>x.v.made,0]];
   V.innerHTML=`
   <div class="stack" style="gap:6px"><h2>Comparer</h2><p class="lead">${auto?"Vos trois premiers du classement. Ajoutez d'autres modèles depuis le classement ou le garage (3 au maximum).":"Le meilleur résultat de chaque ligne est mis en couleur."}</p></div>
@@ -925,9 +935,19 @@ const SF=[
 function renderParams(){
   const V=$("v-parametres");
   V.innerHTML=`<div class="stack" style="gap:6px"><h2>Paramètres</h2><p class="lead">Adaptez le catalogue, les hypothèses de calcul et l'apparence. Tout est enregistré automatiquement.</p></div>
-  <div class="subtabs">${[["garage","Garage"],["hypotheses","Hypothèses de calcul"],["apparence","Apparence"]].map(([k,t])=>`<button type="button" data-ptab="${k}" aria-pressed="${PTAB===k}">${t}</button>`).join("")}</div>
+  <div class="subtabs">${[["garage","Garage"],["marques","Fiabilité et réseau"],["hypotheses","Hypothèses de calcul"],["apparence","Apparence"]].map(([k,t])=>`<button type="button" data-ptab="${k}" aria-pressed="${PTAB===k}">${t}</button>`).join("")}</div>
   <div id="ptab"></div>`;
-  if(PTAB==="garage")renderGarage();else if(PTAB==="hypotheses")renderHyp();else renderLook();
+  if(PTAB==="garage")renderGarage();else if(PTAB==="marques")renderBrands();else if(PTAB==="hypotheses")renderHyp();else renderLook();
+}
+function renderBrands(){
+  const bs=[...new Set(vehicles(true).map(brandOf))].sort((a,b)=>a.localeCompare(b,"fr"));
+  st.S.brands=st.S.brands||{};for(const b of bs)if(!st.S.brands[b])st.S.brands[b]={fia:3,res:3};
+  $("ptab").innerHTML=`<div class="panel pad stack">
+    <p class="lead">Deux notes sur 5 par marque. <b>Fiabilité</b> : synthèse indicative du TÜV Report 2026, de la statistique de pannes ADAC 2026 et du classement Consumer Reports 2025 ; 3 signifie « données limitées » pour les marques récentes en Europe. <b>Réseau</b> : densité estimée des points de vente et d'atelier en France. Corrigez-les selon votre expérience ou votre garage habituel.</p>
+    <div class="tablewrap"><table><thead><tr><th>Marque</th><th>Fiabilité (1 à 5)</th><th>Réseau (1 à 5)</th></tr></thead><tbody>
+    ${bs.map(b=>{const k=b.replace(/[^a-z0-9]/gi,"_");return `<tr><th scope="row">${esc(b)}</th><td><input type="number" id="br_f_${k}" data-scope="s" data-p="brands.${esc(b)}.fia" data-num="1" min="1" max="5" step="0.5" value="${st.S.brands[b].fia}" style="max-width:110px" aria-label="Fiabilité ${esc(b)}"></td><td><input type="number" id="br_r_${k}" data-scope="s" data-p="brands.${esc(b)}.res" data-num="1" min="1" max="5" step="0.5" value="${st.S.brands[b].res}" style="max-width:110px" aria-label="Réseau ${esc(b)}"></td></tr>`;}).join("")}
+    </tbody></table></div><div><button class="btn sm" type="button" id="brReset">Valeurs par défaut</button></div></div>`;
+  $("brReset").onclick=()=>{st.S.brands=clone(DEF_S.brands);changed();toast("Valeurs par défaut rétablies");};
 }
 function renderHyp(){
   $("ptab").innerHTML=`<div class="setgrid">${SF.map((g,i)=>`<div class="panel pad setcard"><h3>${g.t}</h3><div class="fields">${g.f.map(([p,l,step])=>{const id="s__"+p.replace(/\./g,"_");return `<div class="f"><label for="${id}">${l}</label><input type="number" id="${id}" data-scope="s" data-p="${p}" data-num="1" step="${step}" value="${getP(st.S,p)}"></div>`;}).join("")}</div><div><button class="btn sm" type="button" data-sreset="${i}">Valeurs par défaut</button></div></div>`).join("")}</div>`;
@@ -1025,9 +1045,9 @@ function mdLite(t){const lines=esc(t).replace(/\*\*(.+?)\*\*/g,"<strong>$1</stro
   if(inL)h+="</ul>";return h;}
 function contextText(){
   const p=P(),{list}=ev(),s=S();
-  const prof=`Profil : ${p.km} km/an ; ${p.trips} longs trajets/an de ${p.tripKm} km ; reste urbain/périurbain ; recharge ${p.home} ; ${p.family} % en famille ; conduite ${p.style}. Priorités (0-5) : accélération ${p.w.sport}, coffre ${p.w.coffre}, coût ${p.w.budget}, techno ${p.w.tech}, sobriété ${p.w.sob}, longs trajets ${p.w.long}, format SUV ${p.w.shape}. Coffre mini ${p.minTrunk} L, prix max ${p.maxPrice} €. Origine : ${p.origin}. Marques favorites : ${(p.favB||[]).join(", ")||"aucune"} ; écartées : ${(p.excB||[]).join(", ")||"aucune"}. Revenus : ${p.rfr}, TMI ${Math.round(p.tmi*100)} %. Détention ${p.horizon} ans, apport ${p.apport} €, crédit ${p.rate} %, LLD ${p.rateLld} %. Voiture de fonction : ${p.fonction}, début ${p.startYear}, participation ${p.particip} €/mois, énergie payée par l'employeur : ${p.fuelPaid?"oui":"non"}.`;
+  const prof=`Profil : ${p.km} km/an ; ${p.trips} longs trajets/an de ${p.tripKm} km ; reste urbain/périurbain ; recharge ${p.home} ; ${p.family} % en famille ; conduite ${p.style}. Priorités (0-5) : accélération ${p.w.sport}, coffre ${p.w.coffre}, coût ${p.w.budget}, techno ${p.w.tech}, sobriété ${p.w.sob}, longs trajets ${p.w.long}, format SUV ${p.w.shape}, fiabilité ${p.w.fiab}. Coffre mini ${p.minTrunk} L, prix max ${p.maxPrice} €. Origine : ${p.origin}. Marques favorites : ${(p.favB||[]).join(", ")||"aucune"} ; écartées : ${(p.excB||[]).join(", ")||"aucune"}. Revenus : ${p.rfr}, TMI ${Math.round(p.tmi*100)} %. Détention ${p.horizon} ans, apport ${p.apport} €, crédit ${p.rate} %, LLD ${p.rateLld} %. Voiture de fonction : ${p.fonction}, début ${p.startYear}, participation ${p.particip} €/mois, énergie payée par l'employeur : ${p.fuelPaid?"oui":"non"}.`;
   const hyp=`Hypothèses : prime CEE ${s.cee[p.rfr]} € (+${s.sur[p.rfr]} € si batterie UE), électrique éco-scorée ≤ ${s.ceePrixMax} € et ≤ ${s.ceeMasseMax} kg ; malus CO2 dès ${s.malusSeuil} g/km, plafond ${s.malusPlafond} € ; malus poids dès ${s.poidsSeuil} kg ; avantage en nature ${s.aenTaux} % du prix/an, abattement électrique ${s.aenAb} % plafonné ${s.aenPlaf} €/an jusqu'en ${s.aenFin}.`;
-  const rows=list.slice(0,8).map((x,i)=>`${i+1}. ${x.v.n} | ${EN[x.v.e]} | ${BODY[x.v.body]} | fab. ${x.v.made} | ${x.v.price} € | 0-100 ${x.v.acc} s | coffre ${x.v.trunk} L | ${x.v.e==="BEV"?`autonomie ${x.v.range} km, ${x.t.stops} arrêt(s)/long trajet`:x.v.e==="PHEV"?`${x.v.ev} km élec.`:`${x.v.fuel} L/100`} | malus ${Math.round(x.c.mal)} € | prime ${x.c.prime} € | énergie ${Math.round(x.c.en)} €/an | achat ${Math.round(x.c.buy.month)} €/mois (revente ${Math.round(x.c.buy.resale)} €) | LLD ${Math.round(x.c.lld.month)} €/mois | fonction ${Math.round(x.c.fon.month)} €/mois | score ${x.score}`).join("\n");
+  const rows=list.slice(0,8).map((x,i)=>`${i+1}. ${x.v.n} | ${EN[x.v.e]} | ${BODY[x.v.body]} | fab. ${x.v.made} | ${x.v.price} € | 0-100 ${x.v.acc} s | coffre ${x.v.trunk} L | ${x.v.e==="BEV"?`autonomie ${x.v.range} km, ${x.t.stops} arrêt(s)/long trajet`:x.v.e==="PHEV"?`${x.v.ev} km élec.`:`${x.v.fuel} L/100`} | malus ${Math.round(x.c.mal)} € | prime ${x.c.prime} € | énergie ${Math.round(x.c.en)} €/an | achat ${Math.round(x.c.buy.month)} €/mois (revente ${Math.round(x.c.buy.resale)} €) | LLD ${Math.round(x.c.lld.month)} €/mois | fonction ${Math.round(x.c.fon.month)} €/mois | fiabilité ${brandInfo(brandOf(x.v)).fia}/5, réseau ${brandInfo(brandOf(x.v)).res}/5 | score ${x.score}`).join("\n");
   return `${prof}\n${hyp}\nClassement calculé par l'outil (coûts mensuels tout compris, revente déduite en achat) :\n${rows}`;}
 const AI_RULES="Tu es un conseiller automobile indépendant en France. Réponds en français, sans titre, en texte simple (paragraphes courts, puces commençant par « - », gras avec **). N'invente aucun chiffre : utilise ceux fournis. Si une donnée catalogue paraît douteuse, dis-le.";
 async function runAI(question){
